@@ -37,7 +37,10 @@ Future<void> main() async {
   test('simple bus', () async {
     final mod = CosimBusMod(Logic(width: 4));
     await mod.build();
-    await connectCosim('simple_bus');
+
+    const dirName = 'simple_bus';
+
+    await CosimTestingInfrastructure.connectCosim(dirName);
 
     final vectors = [
       Vector({'a': 0}, {'b': 0}),
@@ -45,5 +48,7 @@ Future<void> main() async {
           {'b': LogicValue.ofString('01xz')}),
     ];
     await SimCompare.checkFunctionalVector(mod, vectors);
+
+    CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

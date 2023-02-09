@@ -31,16 +31,19 @@ void main() {
   const hierStuffDir = './test/hier_stuff/';
   const outDirPath = '$hierStuffDir/tmp_output/';
 
-  setUp(() {
+  void cleanup() {
     final outDir = Directory(outDirPath);
     if (outDir.existsSync()) {
       outDir.deleteSync(recursive: true);
     }
-  });
+  }
+
+  setUp(cleanup);
 
   tearDown(() async {
     await Simulator.reset();
     await Cosim.reset();
+    cleanup();
   });
 
   test('hier test', () async {

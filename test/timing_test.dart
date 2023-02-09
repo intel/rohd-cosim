@@ -45,7 +45,8 @@ void main() {
 
     const dirName = 'multi_inject_time';
 
-    await connectCosim(dirName, dumpWaves: true);
+    await CosimTestingInfrastructure.connectCosim(dirName,
+        dumpWaves: true, cleanupAfterSimulationEnds: false);
 
     Simulator.registerAction(12, () {
       reset.put(0);
@@ -86,6 +87,8 @@ void main() {
                   : LogicValue.zero;
       VcdParser.confirmValue(vcdContents, 'reset', vcdTime, expectedResetValue);
     }
+
+    CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 
   test('inject on edge shows up on same edge', () async {
@@ -97,7 +100,8 @@ void main() {
 
     const dirName = 'edge_injection';
 
-    await connectCosim(dirName, dumpWaves: true);
+    await CosimTestingInfrastructure.connectCosim(dirName,
+        dumpWaves: true, cleanupAfterSimulationEnds: false);
 
     Simulator.setMaxSimTime(100);
 
@@ -123,6 +127,8 @@ void main() {
         isTrue);
     expect(VcdParser.confirmValue(vcdContents, 'reset', 20000, LogicValue.zero),
         isTrue);
+
+    CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 
   test('initially driven signals show up properly', () async {
@@ -133,7 +139,8 @@ void main() {
 
     const dirName = 'init_drive';
 
-    await connectCosim(dirName);
+    await CosimTestingInfrastructure.connectCosim(dirName,
+        cleanupAfterSimulationEnds: false);
 
     Simulator.setMaxSimTime(100);
 
@@ -146,5 +153,7 @@ void main() {
     });
 
     await Simulator.run();
+
+    CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

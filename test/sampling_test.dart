@@ -55,7 +55,8 @@ void main() {
 
     const dirName = 'sampling_test';
 
-    await connectCosim(dirName, dumpWaves: true);
+    await CosimTestingInfrastructure.connectCosim(dirName,
+        dumpWaves: true, cleanupAfterSimulationEnds: false);
 
     Simulator.setMaxSimTime(100);
 
@@ -88,5 +89,7 @@ void main() {
         isTrue,
       );
     }
+
+    CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

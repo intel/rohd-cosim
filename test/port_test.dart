@@ -24,6 +24,14 @@ void main() async {
   const portStuffDir = './test/port_stuff/';
   String outDirPathOf(String outDirName) => '$portStuffDir/$outDirName/';
 
+  void cleanup(String outDirName) {
+    final outDirPath = outDirPathOf(outDirName);
+    final outDir = Directory(outDirPath);
+    if (outDir.existsSync()) {
+      outDir.deleteSync(recursive: true);
+    }
+  }
+
   tearDown(() async {
     await Simulator.reset();
     await Cosim.reset();
@@ -38,11 +46,7 @@ void main() async {
     bool failAsync = false,
     bool hang = false,
   }) async {
-    final outDirPath = outDirPathOf(outDirName);
-    final outDir = Directory(outDirPath);
-    if (outDir.existsSync()) {
-      outDir.deleteSync(recursive: true);
-    }
+    cleanup(outDirName);
 
     final runEnv = {
       'OUT_DIR': outDirName,
@@ -67,7 +71,7 @@ void main() async {
     // need to build module to generate connector
     await BottomMod(Logic()).build();
     Cosim.generateConnector(
-        directory: outDirPath, enableLogging: enableLogging);
+        directory: outDirPathOf(outDirName), enableLogging: enableLogging);
 
     final proc = await Process.start(
       './sim.sh',
@@ -93,9 +97,13 @@ void main() async {
   }
 
   test('port test normal', () async {
-    final stdoutContents = await runPortTest(outDirName: 'tmp_normal');
+    const outDirName = 'tmp_normal';
+
+    final stdoutContents = await runPortTest(outDirName: outDirName);
 
     expect(stdoutContents, contains('PASS=1'));
+
+    cleanup(outDirName);
   });
 
   test('port test dart fail', () async {
@@ -114,13 +122,19 @@ void main() async {
 
     // make sure error is communicated
     expect(stdoutContents, contains('ERROR:'));
+
+    cleanup(outDirName);
   });
 
   test('port test with finish passes', () async {
+    const outDirName = 'tmp_finish';
+
     final stdoutContents =
-        await runPortTest(outDirName: 'tmp_finish', finish: true);
+        await runPortTest(outDirName: outDirName, finish: true);
 
     expect(stdoutContents, contains('detected a failure from cocotb'));
+
+    cleanup(outDirName);
   });
 
   test('port test dart fail async', () async {
@@ -139,6 +153,8 @@ void main() async {
 
     // make sure error is communicated
     expect(stdoutContents, contains('ERROR:'));
+
+    cleanup(outDirName);
   });
 
   test('port test dart hang timeout', () async {
@@ -151,5 +167,7 @@ void main() async {
 
     // make sure error is communicated
     expect(stdoutContents, contains('ERROR:'));
+
+    cleanup(outDirName);
   });
 }
