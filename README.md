@@ -1,9 +1,9 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=596776272)
 
-[![Tests](https://github.com/intel/rohd/actions/workflows/general.yml/badge.svg?event=push)](https://github.com/intel/rohd/actions/workflows/general.yml)
-[![API Docs](https://img.shields.io/badge/API%20Docs-generated-success)](https://intel.github.io/rohd/rohd/rohd-library.html)
+[![Tests](https://github.com/intel/rohd-cosim/actions/workflows/general.yml/badge.svg?event=push)](https://github.com/intel/rohd-cosim/actions/workflows/general.yml)
+[![API Docs](https://img.shields.io/badge/API%20Docs-generated-success)](https://intel.github.io/rohd-cosim/rohd_cosim/rohd_cosim-library.html)
 [![Chat](https://img.shields.io/discord/1001179329411166267?label=Chat)](https://discord.gg/jubxF84yGw)
-[![License](https://img.shields.io/badge/License-BSD--3-blue)](https://github.com/intel/rohd/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-BSD--3-blue)](https://github.com/intel/rohd-cosim/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](https://github.com/intel/rohd-cosim/blob/main/CODE_OF_CONDUCT.md)
 
 ROHD Cosim
