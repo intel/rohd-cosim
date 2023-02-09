@@ -16,7 +16,7 @@ set -euo pipefail
 tool/gh_codespaces/install_dart.sh
 
 # Install Pub dependencies.
-tool/gh_actions/install_dependencies.sh
+tool/gh_actions/install_dart_dependencies.sh
 
 # Install Icarus Verilog.
 tool/gh_actions/install_iverilog.sh
