@@ -35,8 +35,8 @@ jobs:
       - name: Install software - Icarus Verilog
         run: tool/gh_actions/install_iverilog.sh
       
-      - name: Install software - Python
-        run: tool/gh_actions/install_python.sh
+      - name: Setup Python
+        uses: actions/setup-python@v4
 
       - name: Install software - Python dependencies
         run: tool/gh_actions/install_python_dependencies.sh
