@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 6.1.5">
+  <meta name="description" content="rohd_cosim API docs, for the Dart programming language.">
+  <title>rohd_cosim - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/intel/rohd-cosim">rohd_cosim package</a></li>
+  </ol>
+  <div class="self-name">rohd_cosim</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <p><a href="https://github.com/codespaces/new?hide_repo_select=true&amp;ref=main&amp;repo=596776272"><img src="https://github.com/codespaces/badge.svg" alt="Open in GitHub Codespaces"></a></p>
+<p><a href="https://github.com/intel/rohd-cosim/actions/workflows/general.yml"><img src="https://github.com/intel/rohd-cosim/actions/workflows/general.yml/badge.svg?event=push" alt="Tests"></a>
+<a href="https://intel.github.io/rohd-cosim/rohd_cosim/rohd_cosim-library.html"><img src="https://img.shields.io/badge/API%20Docs-generated-success" alt="API Docs"></a>
+<a href="https://discord.gg/jubxF84yGw"><img src="https://img.shields.io/discord/1001179329411166267?label=Chat" alt="Chat"></a>
+<a href="https://github.com/intel/rohd-cosim/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-BSD--3-blue" alt="License"></a>
+<a href="https://github.com/intel/rohd-cosim/blob/main/CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg" alt="Contributor Covenant"></a></p>
+<h1 id="rohd-cosim">ROHD Cosim</h1>
+<p>ROHD Framework Co-simulation (ROHD Cosim) is a Dart package built upon the <a href="https://github.com/intel/rohd">Rapid Open Hardware Development (ROHD) framework</a> for cosimulation between the ROHD Simulator and a SystemVerilog simulator.</p>
+<p>Common use cases include:</p>
+<ul>
+<li>Instantiating a SystemVerilog module within a ROHD Module and running a simulation.</li>
+<li>Using ROHD and the <a href="https://github.com/intel/rohd-vf">ROHD Verification Framework (ROHD-VF)</a> to build a testbench for a SystemVerilog module.</li>
+<li>Connecting and simulating a ROHD and ROHD-VF developed functional model to a empty shell located within a SystemVerilog hierarchy.</li>
+<li>Developing a mixed-simulation model where portions of design and/or testbench are in ROHD/ROHD-VF and other are in SystemVerilog or other languages which can run in or interact with a SystemVerilog simulator.</li>
+</ul>
+<p>When you instantiate a SystemVerilog module within the ROHD simulator with ROHD Cosim, from the perspective of the rest of the ROHD environment it looks just like any other ROHD module.  You can run simulations, set breakpoints and debug, etc. even with the SystemVerilog simulator running in cosimulation.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>ROHD Cosim relies on a python package called <a href="https://docs.cocotb.org/en/stable/">cocotb</a> and its GPI library for communicating to SystemVerilog simulators.  The cocotb libraries have good support for a variety of simulators and have been used by many silicon and FPGA projects.</p>
+<p>Detailed instructions for installing cocotb are available here: <a href="https://docs.cocotb.org/en/stable/install.html">https://docs.cocotb.org/en/stable/install.html</a>.  The instructions generally boil down to:</p>
+<pre class="language-dart"><code>pip install cocotb
+</code></pre>
+<p>You will also need your favorite SystemVerilog simulator to do cosimulation between ROHD and SystemVerilog modules.  ROHD Cosim does <em>not</em> do any SystemVerilog parsing or SystemVerilog simulation itself.</p>
+<h2 id="using-rohd-cosim">Using ROHD Cosim</h2>
+<p>There are two steps to using ROHD Cosim:</p>
+<h3 id="1-wrap-your-systemverilog-module">1. Wrap your SystemVerilog module</h3>
+<p>Wrap your SystemVerilog module with ROHD's <a href="https://intel.github.io/rohd/rohd/ExternalSystemVerilogModule-class.html"><code>ExternalSystemVerilogModule</code></a> and apply the <code>Cosim</code> mixin.</p>
+<p>For example, here are corresponding SystemVerilog module definitions and a wrapper for it with Cosim.</p>
+<pre class="language-verilog"><code class="language-verilog">// example_cosim_module.v
+module my_cosim_test_module(
+    input logic a,
+    input logic b,
+    output logic a_bar,
+    output logic b_same,
+    output logic c_none
+);
+
+assign a_bar = ~a;
+assign b_same = b;
+assign c_none = 0;
+
+endmodule
+</code></pre>
+<pre class="language-dart"><code class="language-dart">// example_cosim_module.dart
+class ExampleCosimModule extends ExternalSystemVerilogModule with Cosim {
+  Logic get aBar =&gt; output('a_bar');
+  Logic get bSame =&gt; output('b_same');
+
+  @override
+  List&lt;String&gt; get verilogSources =&gt; ['./example_cosim_module.v'];
+
+  ExampleCosimModule(Logic a, Logic b, {String name = 'ecm'})
+      : super(definitionName: 'my_cosim_test_module', name: name) {
+    addInput('a', a);
+    addInput('b', b);
+    addOutput('a_bar');
+    addOutput('b_same');
+    addOutput('c_none');
+  }
+}
+</code></pre>
+<p>You can add inputs and output using any mechanism, including ROHD <a href="https://intel.github.io/rohd/rohd/Interface-class.html"><code>Interface</code></a>s.</p>
+<h3 id="2-generate-a-connector-and-start-the-cosimulation">2. Generate a connector and start the cosimulation.</h3>
+<p>Call the <code>Cosim.connectToSimulation</code> function with an appropriate configuration after <code>Module.build</code> to connect to the SystemVerilog simulator.</p>
+<h3 id="additional-information">Additional information</h3>
+<ul>
+<li>Note that for cosimulation to execute, the ROHD <code>Simulator</code> must be running.</li>
+<li>Note that with the cosimulation process running in a unit test suite, you have an additional thing to reset each <code>tearDown</code>: <code>Cosim.reset()</code>.</li>
+<li>The ROHD Cosim test suite in <code>test/</code> is a good reference for some examples of how to set things up.</li>
+</ul>
+<h2 id="cosimulation-configurations">Cosimulation Configurations</h2>
+<p>There are three different types of configuration that can be used when connecting to the SystemVerilog simulation: "wrap", "custom", and "port".</p>
+<h3 id="wrap-configuration">Wrap Configuration</h3>
+<p>The wrap configuration is the simplest way to get started with cosimulation if you don't already have an existing build and simulation system set up for the SystemVerilog module.</p>
+<p>Pass a <code>CosimWrapConfig</code> object into the <code>Cosim.connectToSimulation</code> call with information about which simulator you want to use and let ROHD Cosim take care of the rest!  It will automatically create a wrapper with all SystemVerilog submodules for each that needs to be cosimulated.</p>
+<p>The below diagram shows how the wrap configuration connects to your simulation.  ROHD will generate a Makefile and connector for your design, and then connect to it by listening to some port information coming through stdout from the simulation process.</p>
+<p><img src="https://github.com/intel/rohd-cosim/raw/main/doc/diagrams/wrap.png" alt="Wrap Config Diagram"></p>
+<h3 id="custom-configuration">Custom Configuration</h3>
+<p>A custom configuration is a good approach if you already have a build system set up for your design and want to make the minimum changes possible.</p>
+<p>Pass a <code>CosimCustomConfig</code> object into the <code>Cosim.connectToSimulation</code> call with information about how to launch the simulation and it will handle the rest.</p>
+<p>ROHD Cosim will generate a cocotb-based python connector which is launched by the simulation process.</p>
+<p>ROHD Cosim communicates with the python connector through a local socket.  ROHD watches for a special string with port information that comes from stdout via the python connector for how to connect.  If you mask <code>stdout</code> (e.g. to some other file), you need to find another way to pass that information through.</p>
+<p>Your SystemVerilog build will need to be configured to properly integrate the cocotb libraries.  You can follow these instructions for your choice of simulator: <a href="https://docs.cocotb.org/en/stable/custom_flows.html">https://docs.cocotb.org/en/stable/custom_flows.html</a></p>
+<p>You will need to set some environment variables during simulation so that cocotb can determine what to run:</p>
+<pre class="language-dart"><code># Modules to search for test functions (should match python file name and module path generated by ROHD Cosim)
+export MODULE=cosim_test_module
+ 
+export TOPLEVEL_LANG=verilog
+ 
+# TOPLEVEL is the name of the toplevel module in your Verilog build
+export TOPLEVEL=top_tb
+</code></pre>
+<p>You will also need to ensure the following plusarg is passed to your simulation:</p>
+<pre class="language-dart"><code>+define+COCOTB_SIM=1
+</code></pre>
+<p>The diagram below shows how the custom configuration connects to your simulation.  Your custom build flow generates the simulation executable, and then ROHD cosim takes care of the rest similar to the wrap configuration.</p>
+<p><img src="https://github.com/intel/rohd-cosim/raw/main/doc/diagrams/custom.png" alt="Custom Config Diagram"></p>
+<h3 id="port-configuration">Port Configuration</h3>
+<p>A port configuration is an even more specialized config in case you have not only your own custom build system, but a custom simulation run system as well.  With the port configuration, you create a <code>PortConfig</code> object to the <code>Cosim.connectToSimulation</code> call with information about what unix socket port it should connect to.  In this way, it is no longer necessary for ROHD Cosim to be the launcher of the SystemVerilog simulation: another process can launch the simulation and then ROHD Cosim can attach at the specified port.</p>
+<p>To build this system may require some custom python code to manually pass the port information where it needs to go.  The file <code>python/rohd_port_connector.py</code> can help with a lot of this.</p>
+<p>Check out <code>test/port_test.dart</code> for a good example of how to make this work.</p>
+<p>The diagram below shows how the port configuration connects to your simulation.  Your custom build flow generates the simulation executable, and your custom run flow starts the simulation.  You must create some mechanism, such as through a custom cocotb test, to pass port information back to ROHD cosim.  In this diagram, the custom test is launching the actual ROHD process with a port argument on the command line.</p>
+<p><img src="https://github.com/intel/rohd-cosim/raw/main/doc/diagrams/port.png" alt="Port Config Diagram"></p>
+<hr>
+<p>2022 September 9<br>
+Author: Max Korbel &lt;<a href="mailto:max.korbel@intel.com">max.korbel@intel.com</a>&gt;</p>
+<p>Copyright (C) 2022-2023 Intel Corporation<br>
+SPDX-License-Identifier: BSD-3-Clause</p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="rohd_cosim">
+  <span class="name"><a href="rohd_cosim/rohd_cosim-library.html">rohd_cosim</a></span> 
+
+</dt>
+<dd>Copyright (C) 2022 Intel Corporation
+SPDX-License-Identifier: BSD-3-Clause
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="https://github.com/intel/rohd-cosim">rohd_cosim package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">rohd_cosim</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="rohd_cosim/rohd_cosim-library.html">rohd_cosim</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    rohd_cosim
+      0.1.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+

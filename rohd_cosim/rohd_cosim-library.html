@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="rohd_cosim library API docs, for the Dart programming language.">
+  <title>rohd_cosim library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">rohd_cosim</a></li>
+    <li class="self-crumb">rohd_cosim library</li>
+  </ol>
+  <div class="self-name">rohd_cosim</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <div class="toggle" id="theme-button">
+    <label for="theme">
+      <input type="checkbox" id="theme" value="light-theme">
+      <span class="material-symbols-outlined">
+        brightness_4
+      </span>
+    </label>
+  </div>
+</header>
+<main>
+
+  <div id="dartdoc-main-content" class="main-content">
+    
+      <div>
+<h1><span class="kind-library">rohd_cosim</span> library 
+    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+ 
+</h1></div>
+
+    
+<section class="desc markdown">
+  <p>Copyright (C) 2022 Intel Corporation
+SPDX-License-Identifier: BSD-3-Clause</p>
+<p>rohd_cosim.dart
+Top-level exports for the ROHD Cosim library.</p>
+<p>2022 September 8
+Author: Max Korbel <a href="mailto:max.korbel@intel.com">max.korbel@intel.com</a></p>
+</section>
+
+
+    <section class="summary offset-anchor" id="classes">
+      <h2>Classes</h2>
+
+      <dl>
+        <dt id="CosimConfig">
+  <span class="name "><a href="../rohd_cosim/CosimConfig-class.html">CosimConfig</a></span> 
+
+</dt>
+<dd>
+  Configuration information for cosimulation.
+</dd>
+
+        <dt id="CosimConnection">
+  <span class="name "><a href="../rohd_cosim/CosimConnection-class.html">CosimConnection</a></span> 
+
+</dt>
+<dd>
+  Represents a connection to a cosimulation.
+</dd>
+
+        <dt id="CosimCustomConfig">
+  <span class="name "><a href="../rohd_cosim/CosimCustomConfig-class.html">CosimCustomConfig</a></span> 
+
+</dt>
+<dd>
+  A cosimulation configuration which is intended for use when you already
+have a custom build and/or simulation setup created and wish to cosimulate
+using that rather than an auto-generated one.
+</dd>
+
+        <dt id="CosimPortConfig">
+  <span class="name "><a href="../rohd_cosim/CosimPortConfig-class.html">CosimPortConfig</a></span> 
+
+</dt>
+<dd>
+  Configuration to connect to cosimulation on a specified port.
+</dd>
+
+        <dt id="CosimProcessConfig">
+  <span class="name "><a href="../rohd_cosim/CosimProcessConfig-class.html">CosimProcessConfig</a></span> 
+
+</dt>
+<dd>
+  Abstract class for configurations that can be passed to start a
+cosimulation.
+</dd>
+
+        <dt id="CosimWrapConfig">
+  <span class="name "><a href="../rohd_cosim/CosimWrapConfig-class.html">CosimWrapConfig</a></span> 
+
+</dt>
+<dd>
+  A cosimulation configuration for supplying the minimum information to
+get a cosimulation running.
+</dd>
+
+      </dl>
+    </section>
+
+    <section class="summary offset-anchor" id="mixins">
+      <h2>Mixins</h2>
+
+      <dl>
+        <dt id="Cosim">
+  <span class="name "><a href="../rohd_cosim/Cosim-mixin.html">Cosim</a></span> 
+
+</dt>
+<dd>
+  When applied to a <a href="https://pub.dev/documentation/rohd/0.4.2/rohd/ExternalSystemVerilogModule-class.html">ExternalSystemVerilogModule</a>, will configure it so that
+it can be cosimulated in a SystemVerilog simulator along with the ROHD
+simulator.
+</dd>
+
+      </dl>
+    </section>
+
+
+
+
+
+    <section class="summary offset-anchor" id="enums">
+      <h2>Enums</h2>
+
+      <dl>
+        <dt id="SystemVerilogSimulator">
+  <span class="name "><a href="../rohd_cosim/SystemVerilogSimulator.html">SystemVerilogSimulator</a></span> 
+
+</dt>
+<dd>
+  A selection of a type of SystemVerilog Simulator.
+</dd>
+
+      </dl>
+    </section>
+
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">rohd_cosim</a></li>
+  <li class="self-crumb">rohd_cosim library</li>
+</ol>
+
+
+    <h5><span class="package-name">rohd_cosim</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="../rohd_cosim/rohd_cosim-library.html">rohd_cosim</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+    <h5>rohd_cosim library</h5>
+    <ol>
+      <li class="section-title"><a href="../rohd_cosim/rohd_cosim-library.html#classes">Classes</a></li>
+        <li><a href="../rohd_cosim/CosimConfig-class.html">CosimConfig</a></li>
+        <li><a href="../rohd_cosim/CosimConnection-class.html">CosimConnection</a></li>
+        <li><a href="../rohd_cosim/CosimCustomConfig-class.html">CosimCustomConfig</a></li>
+        <li><a href="../rohd_cosim/CosimPortConfig-class.html">CosimPortConfig</a></li>
+        <li><a href="../rohd_cosim/CosimProcessConfig-class.html">CosimProcessConfig</a></li>
+        <li><a href="../rohd_cosim/CosimWrapConfig-class.html">CosimWrapConfig</a></li>
+
+
+      <li class="section-title"><a href="../rohd_cosim/rohd_cosim-library.html#mixins">Mixins</a></li>
+        <li><a href="../rohd_cosim/Cosim-mixin.html">Cosim</a></li>
+
+
+
+
+      <li class="section-title"><a href="../rohd_cosim/rohd_cosim-library.html#enums">Enums</a></li>
+        <li><a href="../rohd_cosim/SystemVerilogSimulator.html">SystemVerilogSimulator</a></li>
+
+
+</ol>
+
+  </div><!--/sidebar-offcanvas-right-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    rohd_cosim
+      0.1.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+
+
+</body>
+
+</html>
+
