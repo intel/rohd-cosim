@@ -9,7 +9,6 @@
   "customizations": {
     "codespaces": {
       "openFiles": [
-        // "example/example.dart",
         "README.md",
         "CONTRIBUTING.md",
         "CODE_OF_CONDUCT.md"
@@ -17,7 +16,9 @@
     },
     "vscode": {
       "extensions": [
-        "Dart-Code.dart-code"
+        "Dart-Code.dart-code",
+        "ms-python.pylint",
+        "ms-python.black-formatter"
       ]
     }
   }

@@ -24,5 +24,5 @@ tool/gh_actions/install_iverilog.sh
 # Install Python.
 tool/gh_actions/install_python.sh
 
-# Install cocotb.
-tool/gh_actions/install_cocotb.sh
+# Install Python dependencies.
+tool/gh_actions/install_python_dependencies.sh

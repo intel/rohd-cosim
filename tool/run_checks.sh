@@ -31,22 +31,6 @@ trap trap_error ERR
 
 printf '\n%s\n' "${form_bold}${color_yellow}Running local checks...${text_reset}"
 
-# Install project dependencies
-print_step 'Install project dependencies'
-tool/gh_actions/install_dependencies.sh
-
-# Verify project formatting
-print_step 'Verify project formatting'
-tool/gh_actions/verify_formatting.sh
-
-# Analyze project source
-print_step 'Analyze project source'
-tool/gh_actions/analyze_source.sh
-
-# Check project documentation
-print_step 'Check project documentation'
-tool/gh_actions/check_documentation.sh
-
 # Check software - Icarus Verilog
 print_step 'Check software - Icarus Verilog'
 printf '"which" output: '
@@ -84,12 +68,58 @@ else
   exit ${exit_code}
 fi
 
+# Check software - pylint
+print_step 'Check software - pylint'
+printf '"which" output: '
+if which pylint; then
+  echo 'pylint found!'
+else
+  declare -r exit_code=${?}
+  echo 'pylint not found: please install pylint'\
+  exit ${exit_code}
+fi
+
+# Check software - black
+print_step 'Check software - black'
+printf '"which" output: '
+if which black; then
+  echo 'black found!'
+else
+  declare -r exit_code=${?}
+  echo 'black not found: please install black'\
+  exit ${exit_code}
+fi
+
+# Install dart dependencies
+print_step 'Install dart dependencies'
+tool/gh_actions/install_dart_dependencies.sh
+
+# Verify dart formatting
+print_step 'Verify dart formatting'
+tool/gh_actions/verify_dart_formatting.sh
+
+# Analyze dart source
+print_step 'Analyze dart source'
+tool/gh_actions/analyze_dart_source.sh
+
+# Check project documentation
+print_step 'Check project documentation'
+tool/gh_actions/check_documentation.sh
+
+# Verify python formatting
+print_step 'Verify python formatting'
+tool/gh_actions/verify_python_formatting.sh
+
+# Analyze python source
+print_step 'Analyze python source'
+tool/gh_actions/analyze_python_source.sh
+
 # Run project tests
 print_step 'Run project tests'
 tool/gh_actions/run_tests.sh
 
-# Check folder - tmp_test
-print_step 'Check folder - tmp_test'
+# Check folder - tmp_*
+print_step 'Check folder - tmp_*'
 tool/gh_actions/check_folder_tmp_test.sh
 
 # Successful script execution notification

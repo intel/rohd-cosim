@@ -20,14 +20,14 @@ jobs:
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
 
-      - name: Install project dependencies
-        run: tool/gh_actions/install_dependencies.sh
+      - name: Install Dart dependencies
+        run: tool/gh_actions/install_dart_dependencies.sh
 
-      - name: Verify project formatting
-        run: tool/gh_actions/verify_formatting.sh
+      - name: Verify dart formatting
+        run: tool/gh_actions/verify_dart_formatting.sh
 
-      - name: Analyze project source
-        run: tool/gh_actions/analyze_source.sh
+      - name: Analyze dart source
+        run: tool/gh_actions/analyze_dart_source.sh
 
       - name: Check project documentation
         run: tool/gh_actions/check_documentation.sh
@@ -38,13 +38,19 @@ jobs:
       - name: Install software - Python
         run: tool/gh_actions/install_python.sh
 
-      - name: Install software - cocotb
-        run: tool/gh_actions/install_cocotb.sh
+      - name: Install software - Python dependencies
+        run: tool/gh_actions/install_python_dependencies.sh
+
+      - name: Verify python formatting
+        run: tool/gh_actions/verify_python_formatting.sh
+      
+      - name: Analyze python source
+        run: tool/gh_actions/analyze_python_source.sh
 
       - name: Run project tests
         run: tool/gh_actions/run_tests.sh
 
-      - name: Check folder - tmp_test
+      - name: Check folder - tmp_*
         run: tool/gh_actions/check_folder_tmp_test.sh
 
   deploy-documentation:

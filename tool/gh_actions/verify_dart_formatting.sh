@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# Copyright (C) 2022 Intel Corporation
+# Copyright (C) 2022-2023 Intel Corporation
 # SPDX-License-Identifier: BSD-3-Clause
 #
-# verify_formatting.sh
-# GitHub Actions step: Verify project formatting.
+# verify_dart_formatting.sh
+# GitHub Actions step: Verify dart formatting.
 #
 # 2022 October 9
 # Author: Chykon
@@ -19,3 +19,5 @@ else
   echo 'Format check failed: please format your code (use "dart format .")!'
   exit ${exit_code}
 fi
+
+#TODO: add python black formatting
