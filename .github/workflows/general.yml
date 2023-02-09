@@ -68,8 +68,8 @@ jobs:
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
 
-      - name: Install project dependencies
-        run: tool/gh_actions/install_dependencies.sh
+      - name: Install dart dependencies
+        run: tool/gh_actions/install_dart_dependencies.sh
 
       - name: Generate project documentation
         run: tool/gh_actions/generate_documentation.sh

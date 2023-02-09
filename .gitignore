@@ -1,6 +1,7 @@
 # Files and directories created by pub
 .dart_tool/
 .packages
+pubspec.lock
 
 # Conventional directory for build outputs
 build/
@@ -11,7 +12,6 @@ doc/api/
 # Other stuff
 tmp*
 *.vcd
-pubspec.lock
-.vscode
+.vscode/
 *.pyc
 __pycache__
