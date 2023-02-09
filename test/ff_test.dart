@@ -41,7 +41,10 @@ Future<void> main() async {
     final mod = CosimFFMod(clk, d);
     await mod.build();
 
-    await connectCosim('simple_ff');
+    const dirName = 'simple_ff';
+
+    await CosimTestingInfrastructure.connectCosim(dirName,
+        cleanupAfterSimulationEnds: false);
 
     final vectors = [
       Vector({'d': 0}, {}),
@@ -51,5 +54,7 @@ Future<void> main() async {
       Vector({'d': 0}, {'q': 0}),
     ];
     await SimCompare.checkFunctionalVector(mod, vectors);
+
+    CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

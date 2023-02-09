@@ -71,16 +71,19 @@ void main() async {
   const pairStuffDir = './test/pair_stuff/';
   const outDirPath = '$pairStuffDir/tmp_output/';
 
-  setUp(() {
+  void cleanup() {
     final outDir = Directory(outDirPath);
     if (outDir.existsSync()) {
       outDir.deleteSync(recursive: true);
     }
-  });
+  }
+
+  setUp(cleanup);
 
   tearDown(() async {
     await Cosim.reset();
     await Simulator.reset();
+    cleanup();
   });
 
   test('pair test', () async {

@@ -35,7 +35,10 @@ Future<void> main() async {
     final mod = FinishModule(SimpleClockGenerator(10).clk);
     await mod.build();
 
-    await connectCosim('finish_test');
+    const dirName = 'finish_test';
+
+    await CosimTestingInfrastructure.connectCosim(dirName,
+        cleanupAfterSimulationEnds: false);
 
     Simulator.setMaxSimTime(100);
 
@@ -48,5 +51,7 @@ Future<void> main() async {
 
     // expect the unexpected
     expect(unexpectedEnd, isTrue);
+
+    CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

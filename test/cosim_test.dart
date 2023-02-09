@@ -81,7 +81,7 @@ Future<void> main() async {
     final mod = ExampleTopModule(a);
     await mod.build();
 
-    await connectCosim('simple_push_n_check');
+    await CosimTestingInfrastructure.connectCosim('simple_push_n_check');
 
     Simulator.registerAction(2, () {
       a.put(1);
@@ -103,7 +103,7 @@ Future<void> main() async {
     final mod = ExampleTopModule(a);
     await mod.build();
 
-    await connectCosim('comb_latency');
+    await CosimTestingInfrastructure.connectCosim('comb_latency');
 
     mod.aBar.changed.listen((event) {
       if (Simulator.time == 2) {
@@ -130,7 +130,7 @@ Future<void> main() async {
     final mod = ExampleTopModule(a);
     await mod.build();
 
-    await connectCosim('simple_simcompare');
+    await CosimTestingInfrastructure.connectCosim('simple_simcompare');
 
     final vectors = [
       Vector({'a': 1}, {'a_bar': 0}),
@@ -143,7 +143,7 @@ Future<void> main() async {
     final mod = ExampleCosimModule(Logic(), Logic());
     await mod.build();
 
-    await connectCosim('fourval');
+    await CosimTestingInfrastructure.connectCosim('fourval');
 
     final vectors = [
       Vector({'b': 0}, {'b_same': 0}),
@@ -159,7 +159,7 @@ Future<void> main() async {
     final mod = DoubleCosimModuleTop(a);
     await mod.build();
 
-    await connectCosim('double_module');
+    await CosimTestingInfrastructure.connectCosim('double_module');
 
     final vectors = [
       Vector({'a': 1}, {'a_bar1': 0, 'a_bar2': 0}),
@@ -187,7 +187,10 @@ Future<void> main() async {
     final mod = ExampleTopModule(a);
     await mod.build();
 
-    await connectCosim('simple_push_n_check_w_waves', dumpWaves: true);
+    const dirName = 'simple_push_n_check_w_waves';
+
+    await CosimTestingInfrastructure.connectCosim(dirName,
+        dumpWaves: true, cleanupAfterSimulationEnds: false);
 
     Simulator.registerAction(2, () {
       a.put(1);
@@ -205,5 +208,7 @@ Future<void> main() async {
 
     expect(File('tmp_cosim/simple_push_n_check_w_waves/waves.vcd').existsSync(),
         isTrue);
+
+    CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }
