@@ -116,6 +116,7 @@ class ExampleCosimModule extends ExternalSystemVerilogModule with Cosim {
 <ul>
 <li>Note that for cosimulation to execute, the ROHD <code>Simulator</code> must be running.</li>
 <li>Note that with the cosimulation process running in a unit test suite, you have an additional thing to reset each <code>tearDown</code>: <code>Cosim.reset()</code>.</li>
+<li>The <code>example/</code> directory has a counter example similar to what's available in the ROHD and ROHD-VF examples.</li>
 <li>The ROHD Cosim test suite in <code>test/</code> is a good reference for some examples of how to set things up.</li>
 </ul>
 <h2 id="cosimulation-configurations">Cosimulation Configurations</h2>
@@ -125,6 +126,7 @@ class ExampleCosimModule extends ExternalSystemVerilogModule with Cosim {
 <p>Pass a <code>CosimWrapConfig</code> object into the <code>Cosim.connectToSimulation</code> call with information about which simulator you want to use and let ROHD Cosim take care of the rest!  It will automatically create a wrapper with all SystemVerilog submodules for each that needs to be cosimulated.</p>
 <p>The below diagram shows how the wrap configuration connects to your simulation.  ROHD will generate a Makefile and connector for your design, and then connect to it by listening to some port information coming through stdout from the simulation process.</p>
 <p><img src="https://github.com/intel/rohd-cosim/raw/main/doc/diagrams/wrap.png" alt="Wrap Config Diagram"></p>
+<p>The example in <code>example/main.dart</code> uses the wrap configuration and is a good reference to get started.</p>
 <h3 id="custom-configuration">Custom Configuration</h3>
 <p>A custom configuration is a good approach if you already have a build system set up for your design and want to make the minimum changes possible.</p>
 <p>Pass a <code>CosimCustomConfig</code> object into the <code>Cosim.connectToSimulation</code> call with information about how to launch the simulation and it will handle the rest.</p>
