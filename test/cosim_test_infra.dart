@@ -47,14 +47,23 @@ class CosimTestingInfrastructure {
 
     if (cleanupAfterSimulationEnds) {
       // wait a second to do it so that the SV simulator can shut down
-      unawaited(Simulator.simulationEnded.then((_) =>
-          Future<void>.delayed(const Duration(seconds: 1))
-              .then((_) => cleanupCosim(testName))));
+      unawaited(Simulator.simulationEnded.then((_) => cleanupCosim(testName)));
     }
   }
 
   /// Deletes temporary files created by [connectCosim].
-  static void cleanupCosim(String testName) {
-    Directory('$_tmpCosimDir/$testName').deleteSync(recursive: true);
+  static Future<void> cleanupCosim(String testName) async {
+    await delayedDeleteDirectory('$_tmpCosimDir/$testName');
+  }
+
+  /// Deletes a directory at [directoryPath] (recursively) after
+  /// [delay] seconds.
+  static Future<void> delayedDeleteDirectory(String directoryPath,
+      {int delay = 1}) async {
+    await Future<void>.delayed(const Duration(seconds: 1));
+    final dir = Directory(directoryPath);
+    if (dir.existsSync()) {
+      dir.deleteSync(recursive: true);
+    }
   }
 }

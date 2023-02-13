@@ -209,6 +209,6 @@ Future<void> main() async {
     expect(File('tmp_cosim/simple_push_n_check_w_waves/waves.vcd').existsSync(),
         isTrue);
 
-    CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

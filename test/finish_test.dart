@@ -52,6 +52,6 @@ Future<void> main() async {
     // expect the unexpected
     expect(unexpectedEnd, isTrue);
 
-    CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

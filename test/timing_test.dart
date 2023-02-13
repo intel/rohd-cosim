@@ -88,7 +88,7 @@ void main() {
       VcdParser.confirmValue(vcdContents, 'reset', vcdTime, expectedResetValue);
     }
 
-    CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 
   test('inject on edge shows up on same edge', () async {
@@ -128,7 +128,7 @@ void main() {
     expect(VcdParser.confirmValue(vcdContents, 'reset', 20000, LogicValue.zero),
         isTrue);
 
-    CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 
   test('initially driven signals show up properly', () async {
@@ -154,6 +154,6 @@ void main() {
 
     await Simulator.run();
 
-    CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

@@ -55,6 +55,6 @@ Future<void> main() async {
     ];
     await SimCompare.checkFunctionalVector(mod, vectors);
 
-    CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }
