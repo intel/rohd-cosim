@@ -86,6 +86,7 @@ Call the `Cosim.connectToSimulation` function with an appropriate configuration 
 ### Additional information
 - Note that for cosimulation to execute, the ROHD `Simulator` must be running.
 - Note that with the cosimulation process running in a unit test suite, you have an additional thing to reset each `tearDown`: `Cosim.reset()`.
+- The `example/` directory has a counter example similar to what's available in the ROHD and ROHD-VF examples.
 - The ROHD Cosim test suite in `test/` is a good reference for some examples of how to set things up.
 
 ##  Cosimulation Configurations
@@ -100,6 +101,8 @@ Pass a `CosimWrapConfig` object into the `Cosim.connectToSimulation` call with i
 The below diagram shows how the wrap configuration connects to your simulation.  ROHD will generate a Makefile and connector for your design, and then connect to it by listening to some port information coming through stdout from the simulation process.
 
 ![Wrap Config Diagram](https://github.com/intel/rohd-cosim/raw/main/doc/diagrams/wrap.png)
+
+The example in `example/main.dart` uses the wrap configuration and is a good reference to get started.
 
 ### Custom Configuration
 
