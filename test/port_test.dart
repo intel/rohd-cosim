@@ -18,18 +18,16 @@ import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';
 import 'package:test/test.dart';
 
+import 'cosim_test_infra.dart';
 import 'port_stuff/port_launch.dart';
 
 void main() async {
   const portStuffDir = './test/port_stuff/';
   String outDirPathOf(String outDirName) => '$portStuffDir/$outDirName/';
 
-  void cleanup(String outDirName) {
+  Future<void> cleanup(String outDirName) async {
     final outDirPath = outDirPathOf(outDirName);
-    final outDir = Directory(outDirPath);
-    if (outDir.existsSync()) {
-      outDir.deleteSync(recursive: true);
-    }
+    await CosimTestingInfrastructure.delayedDeleteDirectory(outDirPath);
   }
 
   tearDown(() async {
@@ -46,7 +44,7 @@ void main() async {
     bool failAsync = false,
     bool hang = false,
   }) async {
-    cleanup(outDirName);
+    await cleanup(outDirName);
 
     final runEnv = {
       'OUT_DIR': outDirName,
@@ -103,7 +101,7 @@ void main() async {
 
     expect(stdoutContents, contains('PASS=1'));
 
-    cleanup(outDirName);
+    await cleanup(outDirName);
   });
 
   test('port test dart fail', () async {
@@ -123,7 +121,7 @@ void main() async {
     // make sure error is communicated
     expect(stdoutContents, contains('ERROR:'));
 
-    cleanup(outDirName);
+    await cleanup(outDirName);
   });
 
   test('port test with finish passes', () async {
@@ -134,7 +132,7 @@ void main() async {
 
     expect(stdoutContents, contains('detected a failure from cocotb'));
 
-    cleanup(outDirName);
+    await cleanup(outDirName);
   });
 
   test('port test dart fail async', () async {
@@ -154,7 +152,7 @@ void main() async {
     // make sure error is communicated
     expect(stdoutContents, contains('ERROR:'));
 
-    cleanup(outDirName);
+    await cleanup(outDirName);
   });
 
   test('port test dart hang timeout', () async {
@@ -168,6 +166,6 @@ void main() async {
     // make sure error is communicated
     expect(stdoutContents, contains('ERROR:'));
 
-    cleanup(outDirName);
+    await cleanup(outDirName);
   });
 }

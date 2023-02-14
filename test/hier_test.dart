@@ -15,6 +15,8 @@ import 'package:rohd/src/utilities/simcompare.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';
 import 'package:test/test.dart';
 
+import 'cosim_test_infra.dart';
+
 class BottomMod extends ExternalSystemVerilogModule with Cosim {
   @override
   String get cosimHierarchy => 'submod';
@@ -31,19 +33,18 @@ void main() {
   const hierStuffDir = './test/hier_stuff/';
   const outDirPath = '$hierStuffDir/tmp_output/';
 
-  void cleanup() {
-    final outDir = Directory(outDirPath);
-    if (outDir.existsSync()) {
-      outDir.deleteSync(recursive: true);
-    }
+  Future<void> cleanup() async {
+    await CosimTestingInfrastructure.delayedDeleteDirectory(outDirPath);
   }
 
-  setUp(cleanup);
+  setUp(() async {
+    await cleanup();
+  });
 
   tearDown(() async {
     await Simulator.reset();
     await Cosim.reset();
-    cleanup();
+    await cleanup();
   });
 
   test('hier test', () async {

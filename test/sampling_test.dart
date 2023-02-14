@@ -90,6 +90,6 @@ void main() {
       );
     }
 
-    CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

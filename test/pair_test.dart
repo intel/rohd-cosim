@@ -15,6 +15,8 @@ import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';
 import 'package:test/test.dart';
 
+import 'cosim_test_infra.dart';
+
 enum PairDirection { leftToRight, rightToLeft, misc }
 
 class PairInterface extends Interface<PairDirection> {
@@ -71,19 +73,18 @@ void main() async {
   const pairStuffDir = './test/pair_stuff/';
   const outDirPath = '$pairStuffDir/tmp_output/';
 
-  void cleanup() {
-    final outDir = Directory(outDirPath);
-    if (outDir.existsSync()) {
-      outDir.deleteSync(recursive: true);
-    }
+  Future<void> cleanup() async {
+    await CosimTestingInfrastructure.delayedDeleteDirectory(outDirPath);
   }
 
-  setUp(cleanup);
+  setUp(() async {
+    await cleanup();
+  });
 
   tearDown(() async {
-    await Cosim.reset();
     await Simulator.reset();
-    cleanup();
+    await Cosim.reset();
+    await cleanup();
   });
 
   test('pair test', () async {

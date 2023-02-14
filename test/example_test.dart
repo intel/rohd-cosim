@@ -8,13 +8,12 @@
 /// Author: Max Korbel <max.korbel@intel.com>
 ///
 
-import 'dart:io';
-
 import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';
 import 'package:test/test.dart';
 
 import '../example/main.dart' as counter;
+import 'cosim_test_infra.dart';
 
 void main() {
   tearDown(() async {
@@ -24,6 +23,7 @@ void main() {
 
   test('counter example', () async {
     await counter.main(noPrint: true);
-    Directory('./example/tmp_cosim').deleteSync(recursive: true);
+    await CosimTestingInfrastructure.delayedDeleteDirectory(
+        './example/tmp_cosim');
   });
 }
