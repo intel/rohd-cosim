@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 #
 # check_folder_tmp_test.sh
-# GitHub Actions step: Check folder - tmp_test.
+# GitHub Actions step: Check folder - tmp_*.
 #
 # 2022 October 12
 # Author: Chykon
