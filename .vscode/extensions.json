@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "Dart-Code.dart-code",
+    "ms-vscode-remote.remote-containers",
+    "DavidAnson.vscode-markdownlint",
+    "ms-python.python",
+    "ms-python.black-formatter",
+    "ms-python.vscode-pylance",
+    "ms-python.isort"
+  ]
+}
