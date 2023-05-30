@@ -30,7 +30,7 @@
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../index.html">rohd_cosim</a></li>
     <li><a href="../rohd_cosim/rohd_cosim-library.html">rohd_cosim</a></li>
-    <li class="self-crumb">CosimConfig abstract class</li>
+    <li class="self-crumb">CosimConfig class</li>
   </ol>
   <div class="self-name">CosimConfig</div>
   <form class="search navbar-right" role="search">
@@ -39,8 +39,11 @@
   <div class="toggle" id="theme-button">
     <label for="theme">
       <input type="checkbox" id="theme" value="light-theme">
-      <span class="material-symbols-outlined">
+      <span id="dark-theme-button" class="material-symbols-outlined">
         brightness_4
+      </span>
+      <span id="light-theme-button" class="material-symbols-outlined">
+        brightness_5
       </span>
     </label>
   </div>
@@ -50,7 +53,7 @@
   <div id="dartdoc-main-content" class="main-content">
       <div>
 <h1><span class="kind-class">CosimConfig</span> class 
-    <a href="https://dart.dev/null-safety" class="feature feature-null-safety" title="Supports the null safety language feature.">Null safety</a>
+    <a href="https://dart.dev/language/classes#abstract-classes" class="feature feature-abstract" title="This type can not be directly constructed.">abstract</a>
  
 </h1></div>
 
@@ -86,7 +89,7 @@
 
     <dl class="constructor-summary-list">
         <dt id="CosimConfig" class="callable">
-          <span class="name"><a href="../rohd_cosim/CosimConfig/CosimConfig.html">CosimConfig</a></span><span class="signature">(<span class="parameter" id="-param-enableLogging">{<span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.6/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enableLogging</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-throwOnUnexpectedEnd"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.6/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">throwOnUnexpectedEnd</span> = <span class="default-value">true</span>}</span>)</span>
+          <span class="name"><a href="../rohd_cosim/CosimConfig/CosimConfig.html">CosimConfig</a></span><span class="signature">(<span class="parameter" id="-param-enableLogging">{<span class="type-annotation"><a href="https://api.dart.dev/stable/3.0.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enableLogging</span> = <span class="default-value">false</span>, </span><span class="parameter" id="-param-throwOnUnexpectedEnd"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.0.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">throwOnUnexpectedEnd</span> = <span class="default-value">true</span>}</span>)</span>
         </dt>
         <dd>
           Constructs information for cosimulation.
@@ -101,7 +104,7 @@
       <dl class="properties">
         <dt id="enableLogging" class="property">
   <span class="name"><a href="../rohd_cosim/CosimConfig/enableLogging.html">enableLogging</a></span>
-  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.6/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.0.2/dart-core/bool-class.html">bool</a></span> 
 
 </dt>
 <dd>
@@ -111,8 +114,8 @@
 </dd>
 
         <dt id="hashCode" class="property inherited">
-  <span class="name"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/hashCode.html">hashCode</a></span>
-  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.6/dart-core/int-class.html">int</a></span> 
+  <span class="name"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/hashCode.html">hashCode</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.0.2/dart-core/int-class.html">int</a></span> 
 
 </dt>
 <dd class="inherited">
@@ -122,8 +125,8 @@
 </dd>
 
         <dt id="runtimeType" class="property inherited">
-  <span class="name"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/runtimeType.html">runtimeType</a></span>
-  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.6/dart-core/Type-class.html">Type</a></span> 
+  <span class="name"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/runtimeType.html">runtimeType</a></span>
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.0.2/dart-core/Type-class.html">Type</a></span> 
 
 </dt>
 <dd class="inherited">
@@ -134,7 +137,7 @@
 
         <dt id="throwOnUnexpectedEnd" class="property">
   <span class="name"><a href="../rohd_cosim/CosimConfig/throwOnUnexpectedEnd.html">throwOnUnexpectedEnd</a></span>
-  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/2.19.6/dart-core/bool-class.html">bool</a></span> 
+  <span class="signature">&#8594; <a href="https://api.dart.dev/stable/3.0.2/dart-core/bool-class.html">bool</a></span> 
 
 </dt>
 <dd>
@@ -155,7 +158,7 @@ cosimulation ends unexpectedly.  Otherwise, just prints a warning.
     <dl class="callables">
         <dt id="connect" class="callable">
   <span class="name"><a href="../rohd_cosim/CosimConfig/connect.html">connect</a></span><span class="signature">(<wbr>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.6/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../rohd_cosim/CosimConnection-class.html">CosimConnection</a></span>&gt;</span></span>
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.0.2/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="../rohd_cosim/CosimConnection-class.html">CosimConnection</a></span>&gt;</span></span>
   </span>
   
 
@@ -167,21 +170,21 @@ cosimulation ends unexpectedly.  Otherwise, just prints a warning.
 </dd>
 
         <dt id="noSuchMethod" class="callable inherited">
-  <span class="name"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
+  <span class="name"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></span><span class="signature">(<wbr><span class="parameter" id="noSuchMethod-param-invocation"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Invocation-class.html">Invocation</a></span> <span class="parameter-name">invocation</span></span>)
     <span class="returntype parameter">&#8594; dynamic</span>
   </span>
   
 
 </dt>
 <dd class="inherited">
-  Invoked when a non-existent method or property is accessed.
+  Invoked when a nonexistent method or property is accessed.
   <div class="features"><span class="feature">inherited</span></div>
 
 </dd>
 
         <dt id="toString" class="callable inherited">
-  <span class="name"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.6/dart-core/String-class.html">String</a></span>
+  <span class="name"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/toString.html">toString</a></span><span class="signature">(<wbr>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.0.2/dart-core/String-class.html">String</a></span>
   </span>
   
 
@@ -201,8 +204,8 @@ cosimulation ends unexpectedly.  Otherwise, just prints a warning.
     <h2>Operators</h2>
     <dl class="callables">
         <dt id="operator ==" class="callable inherited">
-  <span class="name"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
-    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/2.19.6/dart-core/bool-class.html">bool</a></span>
+  <span class="name"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/operator_equals.html">operator ==</a></span><span class="signature">(<wbr><span class="parameter" id="==-param-other"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object-class.html">Object</a></span> <span class="parameter-name">other</span></span>)
+    <span class="returntype parameter">&#8594; <a href="https://api.dart.dev/stable/3.0.2/dart-core/bool-class.html">bool</a></span>
   </span>
   
 
@@ -232,7 +235,7 @@ cosimulation ends unexpectedly.  Otherwise, just prints a warning.
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
   <li><a href="../index.html">rohd_cosim</a></li>
   <li><a href="../rohd_cosim/rohd_cosim-library.html">rohd_cosim</a></li>
-  <li class="self-crumb">CosimConfig abstract class</li>
+  <li class="self-crumb">CosimConfig class</li>
 </ol>
 
 
@@ -272,17 +275,17 @@ cosimulation ends unexpectedly.  Otherwise, just prints a warning.
           <a href="../rohd_cosim/CosimConfig-class.html#instance-properties">Properties</a>
         </li>
           <li><a href="../rohd_cosim/CosimConfig/enableLogging.html">enableLogging</a></li>
-          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/hashCode.html">hashCode</a></li>
-          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/runtimeType.html">runtimeType</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/hashCode.html">hashCode</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/runtimeType.html">runtimeType</a></li>
           <li><a href="../rohd_cosim/CosimConfig/throwOnUnexpectedEnd.html">throwOnUnexpectedEnd</a></li>
 
         <li class="section-title"><a href="../rohd_cosim/CosimConfig-class.html#instance-methods">Methods</a></li>
           <li><a href="../rohd_cosim/CosimConfig/connect.html">connect</a></li>
-          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
-          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/toString.html">toString</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/toString.html">toString</a></li>
 
         <li class="section-title inherited"><a href="../rohd_cosim/CosimConfig-class.html#operators">Operators</a></li>
-          <li class="inherited"><a href="https://api.dart.dev/stable/2.19.6/dart-core/Object/operator_equals.html">operator ==</a></li>
+          <li class="inherited"><a href="https://api.dart.dev/stable/3.0.2/dart-core/Object/operator_equals.html">operator ==</a></li>
 
 
 
