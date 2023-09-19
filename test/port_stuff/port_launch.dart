@@ -1,12 +1,11 @@
-/// Copyright (C) 2022 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// port_launch.dart
-/// Utility for port_test.dart, launches the actual cosim via cli.
-///
-/// 2022 October 27
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// port_launch.dart
+// Utility for port_test.dart, launches the actual cosim via cli.
+//
+// 2022 October 27
+// Author: Max Korbel <max.korbel@intel.com>
 
 // ignore_for_file: avoid_print
 

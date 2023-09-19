@@ -1,12 +1,11 @@
-/// Copyright (C) 2022 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// sampling_test.sv
-/// A simple SystemVerilog module for testing sampling in cosimulation.
-///
-/// 2022
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// sampling_test.sv
+// A simple SystemVerilog module for testing sampling in cosimulation.
+//
+// 2022
+// Author: Max Korbel <max.korbel@intel.com>
 
 module sampling_module (
     input logic clk,

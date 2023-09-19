@@ -1,12 +1,11 @@
-/// Copyright (C) 2023 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// example_test.dart
-/// Tests to make sure that the examples don't break.
-///
-/// 2023 February 13
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// example_test.dart
+// Tests to make sure that the examples don't break.
+//
+// 2023 February 13
+// Author: Max Korbel <max.korbel@intel.com>
 
 import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';

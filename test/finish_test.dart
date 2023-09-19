@@ -1,12 +1,11 @@
-/// Copyright (C) 2022 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// finish_test.dart
-/// Test if the simulator calls $finish before cosim is done.
-///
-/// 2022 November 2
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// finish_test.dart
+// Test if the simulator calls $finish before cosim is done.
+//
+// 2022 November 2
+// Author: Max Korbel <max.korbel@intel.com>
 
 import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';

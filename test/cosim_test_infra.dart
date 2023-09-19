@@ -1,12 +1,11 @@
-/// Copyright (C) 2022-2023 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// cosim_test_infra.dart
-/// Utility for launching cosimulation in tests.
-///
-/// 2022
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// cosim_test_infra.dart
+// Utility for launching cosimulation in tests.
+//
+// 2022
+// Author: Max Korbel <max.korbel@intel.com>
 
 // ignore_for_file: avoid_print
 

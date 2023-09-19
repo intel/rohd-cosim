@@ -1,12 +1,11 @@
-/// Copyright (C) 2022-2023 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// cosim.dart
-/// Definitions for Cosim with ROHD
-///
-/// 2022 January 9
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// cosim.dart
+// Definitions for Cosim with ROHD
+//
+// 2022 January 9
+// Author: Max Korbel <max.korbel@intel.com>
 
 import 'dart:async';
 import 'dart:collection';

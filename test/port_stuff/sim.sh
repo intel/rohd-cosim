@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2022 Intel Corporation
+# Copyright (C) 2022-2023 Intel Corporation
 # SPDX-License-Identifier: BSD-3-Clause
 #
 # sim.sh
@@ -8,7 +8,6 @@
 #
 # 2022
 # Author: Max Korbel <max.korbel@intel.com>
-#
 
 export MODULE=custom_test_module
 export TOPLEVEL_LANG=verilog

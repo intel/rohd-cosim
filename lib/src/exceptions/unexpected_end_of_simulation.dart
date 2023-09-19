@@ -1,12 +1,11 @@
-/// Copyright (C) 2023 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// rohd_cosim_exception.dart
-/// Base class for all ROHD Cosim exceptions
-///
-/// 2023 January 9
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// rohd_cosim_exception.dart
+// Base class for all ROHD Cosim exceptions
+//
+// 2023 January 9
+// Author: Max Korbel <max.korbel@intel.com>
 
 import 'package:rohd_cosim/src/exceptions/rohd_cosim_exception.dart';
 

@@ -1,12 +1,11 @@
-/// Copyright (C) 2022 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// hier_test.dart
-/// Tests with levels of hierarchy and custom build & sim flows.
-///
-/// 2022 September 8
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// hier_test.dart
+// Tests with levels of hierarchy and custom build & sim flows.
+//
+// 2022 September 8
+// Author: Max Korbel <max.korbel@intel.com>
 
 import 'dart:io';
 

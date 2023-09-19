@@ -1,12 +1,11 @@
-/// Copyright (C) 2022 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// pair_mods.sv
-/// SystemVerilog modules for pair cosimulation.
-///
-/// 2022
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// pair_mods.sv
+// SystemVerilog modules for pair cosimulation.
+//
+// 2022
+// Author: Max Korbel <max.korbel@intel.com>
 
 module left_side (
     input logic clk,
