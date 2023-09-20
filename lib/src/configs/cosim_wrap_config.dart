@@ -1,12 +1,11 @@
-/// Copyright (C) 2022-2023 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// cosim_wrap_config.dart
-/// Definition for an automatic wrapped configuration of cosimulation.
-///
-/// 2022 September 8
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// cosim_wrap_config.dart
+// Definition for an automatic wrapped configuration of cosimulation.
+//
+// 2022 September 8
+// Author: Max Korbel <max.korbel@intel.com>
 
 import 'dart:io';
 

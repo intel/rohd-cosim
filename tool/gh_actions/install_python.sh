@@ -8,7 +8,6 @@
 #
 # 2023 February 9
 # Author: Max Korbel <max.korbel@intel.com
-#
 
 set -euo pipefail
 

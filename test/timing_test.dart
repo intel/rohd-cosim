@@ -1,12 +1,11 @@
-/// Copyright (C) 2022-2023 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// timing_test.dart
-/// Tests for timing sensitivities with cosim.
-///
-/// 2022 December 28
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2022-2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// timing_test.dart
+// Tests for timing sensitivities with cosim.
+//
+// 2022 December 28
+// Author: Max Korbel <max.korbel@intel.com>
 
 import 'dart:async';
 import 'dart:io';

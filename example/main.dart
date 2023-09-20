@@ -1,12 +1,11 @@
-/// Copyright (C) 2023 Intel Corporation
-/// SPDX-License-Identifier: BSD-3-Clause
-///
-/// main.dart
-/// Example of using a `CosimWrapConfig` with ROHD Cosim.
-///
-/// 2023 February 13
-/// Author: Max Korbel <max.korbel@intel.com>
-///
+// Copyright (C) 2023 Intel Corporation
+// SPDX-License-Identifier: BSD-3-Clause
+//
+// main.dart
+// Example of using a `CosimWrapConfig` with ROHD Cosim.
+//
+// 2023 February 13
+// Author: Max Korbel <max.korbel@intel.com>
 
 // ignore_for_file: avoid_print
 
