@@ -7,12 +7,12 @@ issue_tracker: https://github.com/intel/rohd-cosim/issues
 documentation: https://intel.github.io/rohd-cosim/rohd_cosim/rohd_cosim-library.html
 
 environment:
-  sdk: '>=2.17.0 <3.0.0'
+  sdk: '>=2.17.0 <4.0.0'
 
 dependencies:
   logging: ^1.0.2
   meta: ^1.8.0
-  rohd: ^0.4.2
+  rohd: ^0.5.0
   synchronized: ^3.0.0
 
 dev_dependencies:

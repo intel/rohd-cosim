@@ -135,6 +135,7 @@ class CosimWrapConfig extends CosimProcessConfig {
           registreeEntry.value.instantiationVerilog(
             'dont_care',
             registreeEntry.key,
+            // ignore: invalid_use_of_protected_member
             registreeEntry.value.inputs.map((key, value) => MapEntry(key, '')),
             registreeEntry.value.outputs.map((key, value) => MapEntry(key, '')),
           )),

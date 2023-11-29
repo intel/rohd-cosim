@@ -258,11 +258,28 @@ mixin Cosim on ExternalSystemVerilogModule {
   Future<void> _sendInput(Logic inputSignal, LogicValue newValue) async {
     assert(
         inputSignal.parentModule! == this, 'Signal should be in this Cosim.');
-    await _socketLock.synchronized(() async {
-      _send('DRIVE:'
-          '${_cosimSignalName(inputSignal)}:'
-          '${newValue.toString(includeWidth: false)}');
-    });
+
+    if (inputSignal is LogicArray && inputSignal.numUnpackedDimensions > 0) {
+      //TODO: support >1 unpacked
+      var idx = 0;
+      for (final element in inputSignal.elements) {
+        await _socketLock.synchronized(() async {
+          _send('DRIVE:'
+              '${_cosimSignalName(inputSignal)}[$idx]:'
+              '${newValue.getRange(
+                    idx * element.width,
+                    idx * element.width + element.width,
+                  ).toString(includeWidth: false)}');
+        });
+        idx++;
+      }
+    } else {
+      await _socketLock.synchronized(() async {
+        _send('DRIVE:'
+            '${_cosimSignalName(inputSignal)}:'
+            '${newValue.toString(includeWidth: false)}');
+      });
+    }
   }
 
   /// Transmits all input values to cosim.
@@ -300,13 +317,27 @@ mixin Cosim on ExternalSystemVerilogModule {
       final signalNameSplit = event.signalName!.split('.');
       final registreeName = signalNameSplit[0];
       final portName = signalNameSplit[1];
+
       if (!_registrees.containsKey(registreeName)) {
         throw Exception('Did not find registered module named "$registreeName",'
             ' but received a message from the cosim process attempting to'
             ' drive this signal: "${event.signalName}"');
       }
-      // ignore: unnecessary_null_checks
-      _registrees[registreeName]!.output(portName).put(event.signalValue!);
+
+      // handle case where there was an unpacked array (should end with ']')
+      if (portName.endsWith(']')) {
+        // TODO: handle >1 unpacked
+        final splitPortName = portName.split(RegExp(r'[\[\]]'));
+        final arrayName = splitPortName[0];
+        final arrayIndex = int.parse(splitPortName[1]);
+        _registrees[registreeName]!
+            .output(arrayName)
+            .elements[arrayIndex]
+            .put(event.signalValue!);
+      } else {
+        // ignore: unnecessary_null_checks
+        _registrees[registreeName]!.output(portName).put(event.signalValue!);
+      }
     });
 
     _receivedStream
@@ -545,12 +576,25 @@ async def setup_connections(dut, connector : rohd_connector.RohdConnector):
           // no need to listen to 0-bit signals, they probably don't even exist
           continue;
         }
-        // ignore: missing_whitespace_between_adjacent_strings
-        pythonFileContents.write('    cocotb.start_soon('
-            'connector.listen_to_signal('
-            "'${registree._cosimSignalName(outputLogic)}',"
-            ' $cocoTbHier.$outputName'
-            '))\n');
+        if (outputLogic is LogicArray &&
+            outputLogic.numUnpackedDimensions > 0) {
+          //TODO: handle >1 unpacked
+          for (var i = 0; i < outputLogic.dimensions.first; i++) {
+            // ignore: missing_whitespace_between_adjacent_strings
+            pythonFileContents.write('    cocotb.start_soon('
+                'connector.listen_to_signal('
+                "'${registree._cosimSignalName(outputLogic)}[$i]',"
+                ' $cocoTbHier.$outputName[$i]'
+                '))\n');
+          }
+        } else {
+          // ignore: missing_whitespace_between_adjacent_strings
+          pythonFileContents.write('    cocotb.start_soon('
+              'connector.listen_to_signal('
+              "'${registree._cosimSignalName(outputLogic)}',"
+              ' $cocoTbHier.$outputName'
+              '))\n');
+        }
       }
       for (final inputEntry in registree.inputs.entries) {
         final inputName = inputEntry.key;
@@ -559,9 +603,19 @@ async def setup_connections(dut, connector : rohd_connector.RohdConnector):
           // no need to drive 0-bit signals, they probably don't even exist
           continue;
         }
-        pythonFileContents.write(
-            "    nameToSignalMap['${registree._cosimSignalName(inputLogic)}'] "
-            '= $cocoTbHier.$inputName\n');
+
+        if (inputLogic is LogicArray && inputLogic.numUnpackedDimensions > 0) {
+          //TODO: handle >1 unpacked
+          for (var i = 0; i < inputLogic.dimensions.first; i++) {
+            pythonFileContents.write(
+                "    nameToSignalMap['${registree._cosimSignalName(inputLogic)}[$i]'] "
+                '= $cocoTbHier.$inputName[$i]\n');
+          }
+        } else {
+          pythonFileContents.write(
+              "    nameToSignalMap['${registree._cosimSignalName(inputLogic)}'] "
+              '= $cocoTbHier.$inputName\n');
+        }
       }
     }
     pythonFileContents
