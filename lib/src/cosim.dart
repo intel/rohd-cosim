@@ -8,10 +8,10 @@
 // Author: Max Korbel <max.korbel@intel.com>
 
 import 'dart:async';
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:rohd/rohd.dart';
 // ignore: implementation_imports
@@ -260,9 +260,8 @@ mixin Cosim on ExternalSystemVerilogModule {
         inputSignal.parentModule! == this, 'Signal should be in this Cosim.');
 
     if (inputSignal is LogicArray && inputSignal.numUnpackedDimensions > 0) {
-      //TODO: support >1 unpacked
       var idx = 0;
-      for (final element in inputSignal.elements) {
+      for (final element in inputSignal.flattenedUnpacked) {
         await _socketLock.synchronized(() async {
           _send('DRIVE:'
               '${_cosimSignalName(inputSignal)}[$idx]:'
@@ -326,13 +325,13 @@ mixin Cosim on ExternalSystemVerilogModule {
 
       // handle case where there was an unpacked array (should end with ']')
       if (portName.endsWith(']')) {
-        // TODO: handle >1 unpacked
         final splitPortName = portName.split(RegExp(r'[\[\]]'));
         final arrayName = splitPortName[0];
         final arrayIndex = int.parse(splitPortName[1]);
-        _registrees[registreeName]!
-            .output(arrayName)
-            .elements[arrayIndex]
+        (_registrees[registreeName]!.output(arrayName) as LogicArray)
+            .flattenedUnpacked
+            .toList()[arrayIndex]
+            // ignore: unnecessary_null_checks
             .put(event.signalValue!);
       } else {
         // ignore: unnecessary_null_checks
@@ -578,21 +577,18 @@ async def setup_connections(dut, connector : rohd_connector.RohdConnector):
         }
         if (outputLogic is LogicArray &&
             outputLogic.numUnpackedDimensions > 0) {
-          //TODO: handle >1 unpacked
-          for (var i = 0; i < outputLogic.dimensions.first; i++) {
-            // ignore: missing_whitespace_between_adjacent_strings
-            pythonFileContents.write('    cocotb.start_soon('
+          for (var i = 0; i < outputLogic.flattenedUnpackedCount; i++) {
+            pythonFileContents.write('    cocotb.start_soon( '
                 'connector.listen_to_signal('
                 "'${registree._cosimSignalName(outputLogic)}[$i]',"
-                ' $cocoTbHier.$outputName[$i]'
+                ' $cocoTbHier.$outputName[$i] '
                 '))\n');
           }
         } else {
-          // ignore: missing_whitespace_between_adjacent_strings
-          pythonFileContents.write('    cocotb.start_soon('
+          pythonFileContents.write('    cocotb.start_soon( '
               'connector.listen_to_signal('
               "'${registree._cosimSignalName(outputLogic)}',"
-              ' $cocoTbHier.$outputName'
+              ' $cocoTbHier.$outputName '
               '))\n');
         }
       }
@@ -605,15 +601,14 @@ async def setup_connections(dut, connector : rohd_connector.RohdConnector):
         }
 
         if (inputLogic is LogicArray && inputLogic.numUnpackedDimensions > 0) {
-          //TODO: handle >1 unpacked
-          for (var i = 0; i < inputLogic.dimensions.first; i++) {
-            pythonFileContents.write(
-                "    nameToSignalMap['${registree._cosimSignalName(inputLogic)}[$i]'] "
+          for (var i = 0; i < inputLogic.flattenedUnpackedCount; i++) {
+            pythonFileContents.write('    nameToSignalMap[ '
+                "'${registree._cosimSignalName(inputLogic)}[$i]' ] "
                 '= $cocoTbHier.$inputName[$i]\n');
           }
         } else {
-          pythonFileContents.write(
-              "    nameToSignalMap['${registree._cosimSignalName(inputLogic)}'] "
+          pythonFileContents.write('    nameToSignalMap[ '
+              "'${registree._cosimSignalName(inputLogic)}' ] "
               '= $cocoTbHier.$inputName\n');
         }
       }
@@ -625,4 +620,20 @@ async def setup_connections(dut, connector : rohd_connector.RohdConnector):
 
     File('$directory/__init__.py').writeAsStringSync('');
   }
+}
+
+extension on LogicArray {
+  /// Returns all unpacked dimensions as a flattened iterable.
+  Iterable<Logic> get flattenedUnpacked {
+    Iterable<Logic> flattenedElements = elements;
+    for (var i = 0; i < numUnpackedDimensions - 1; i++) {
+      flattenedElements = flattenedElements.map((e) => e.elements).flattened;
+    }
+    return flattenedElements;
+  }
+
+  /// Returns the number of elements in [flattenedUnpacked].
+  int get flattenedUnpackedCount => numUnpackedDimensions == 0
+      ? 0
+      : dimensions.getRange(0, numUnpackedDimensions).fold(1, (a, b) => a * b);
 }

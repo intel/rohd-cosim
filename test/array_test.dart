@@ -51,8 +51,14 @@ Future<void> main() async {
   });
 
   group('cosim array', () {
-    //TODO: walking ones
-    //TODO: 2xunpacked dims
+    List<Vector> walkingOnes(int width) {
+      final vectors = <Vector>[];
+      for (var i = 0; i < width; i++) {
+        final shiftedOne = LogicValue.ofInt(1, width) << i;
+        vectors.add(Vector({'a': shiftedOne}, {'b': shiftedOne}));
+      }
+      return vectors;
+    }
 
     test('2 packed, 0 unpacked', () async {
       final mod = CosimArrayMod(Logic(width: 6));
@@ -66,6 +72,7 @@ Future<void> main() async {
         Vector({'a': 0}, {'b': 0}),
         Vector({'a': LogicValue.ofString('01xz10')},
             {'b': LogicValue.ofString('01xz10')}),
+        ...walkingOnes(6)
       ];
       await SimCompare.checkFunctionalVector(mod, vectors);
 
@@ -84,6 +91,28 @@ Future<void> main() async {
         Vector({'a': 0}, {'b': 0}),
         Vector({'a': LogicValue.ofString('01xz10' * 4)},
             {'b': LogicValue.ofString('01xz10' * 4)}),
+        ...walkingOnes(24),
+      ];
+
+      await SimCompare.checkFunctionalVector(mod, vectors);
+
+      await CosimTestingInfrastructure.cleanupCosim(dirName);
+    });
+
+    test('2 packed, 2 unpacked', () async {
+      final mod =
+          CosimArrayMod(Logic(width: 6 * 4 * 5), numUnpackedDimensions: 2);
+      await mod.build();
+
+      const dirName = 'simple_array_2p2u';
+
+      await CosimTestingInfrastructure.connectCosim(dirName);
+
+      final vectors = [
+        Vector({'a': 0}, {'b': 0}),
+        Vector({'a': LogicValue.ofString('01xz10' * 4 * 5)},
+            {'b': LogicValue.ofString('01xz10' * 4 * 5)}),
+        ...walkingOnes(120),
       ];
       await SimCompare.checkFunctionalVector(mod, vectors);
 
