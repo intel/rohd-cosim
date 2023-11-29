@@ -43,7 +43,7 @@ The [ROHD Forum](https://intel.github.io/rohd-website/forum/rohd-forum/) is a pe
 You must have [Dart](https://dart.dev/) installed on your system to use ROHD and ROHD Cosim. You can find detailed instructions for how to install Dart here:
 <https://dart.dev/get-dart>
 
-To run the complete ROHD Cosim test suite for development, you need to install [Icarus Verilog](http://iverilog.icarus.com/). It is used as the SystemVerilog simulator side of the cosimulation. Installation instructions are available here: <https://iverilog.fandom.com/wiki/Installation_Guide>
+To run the complete ROHD Cosim test suite for development, you need to install [Icarus Verilog](https://steveicarus.github.io/iverilog/). It is used as the SystemVerilog simulator side of the cosimulation. Installation instructions are available here: <https://iverilog.fandom.com/wiki/Installation_Guide>
 
 ROHD Cosim relies on a python package called [cocotb](https://docs.cocotb.org/en/stable/) and its GPI library for communicating to SystemVerilog simulators.  The cocotb libraries have good support for a variety of simulators and have been used by many silicon and FPGA projects. You will need to have a sufficiently recent version of [Python](https://www.python.org/) installed.  Detailed instructions for installing cocotb are available here: <https://docs.cocotb.org/en/stable/install.html>.  The instructions generally boil down to:
 

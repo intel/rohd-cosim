@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // cosim_bus.sv
-// A simple SystemVerilog module for testing cosimulation.
+// A simple SystemVerilog module for testing cosimulation with busses.
 //
 // 2022
 // Author: Max Korbel <max.korbel@intel.com>
