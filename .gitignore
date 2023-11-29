@@ -12,7 +12,7 @@ doc/api/
 # Other stuff
 tmp*
 *.vcd
-.vscode/
+.vscode/*
 *.pyc
 __pycache__
 

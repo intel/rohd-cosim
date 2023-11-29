@@ -1,5 +1,5 @@
 name: rohd_cosim
-version: 0.1.0
+version: 0.2.0
 description: Cosimulation for the Rapid Open Hardware Development (ROHD) framework with other simulators
 homepage: https://github.com/intel/rohd-cosim
 repository: https://github.com/intel/rohd-cosim
