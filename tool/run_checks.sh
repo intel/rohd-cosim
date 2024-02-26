@@ -103,7 +103,7 @@ tool/gh_actions/analyze_dart_source.sh
 
 # Check project documentation
 print_step 'Check project documentation'
-tool/gh_actions/check_documentation.sh
+tool/gh_actions/generate_documentation.sh
 
 # Verify python formatting
 print_step 'Verify python formatting'
