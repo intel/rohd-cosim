@@ -29,7 +29,7 @@
   <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">rohd_cosim</a></li>
-    <li><a href="../../rohd_cosim/rohd_cosim-library.html">rohd_cosim</a></li>
+    <li><a href="../../rohd_cosim/rohd_cosim-library.html">rohd_cosim.dart</a></li>
     <li><a href="../../rohd_cosim/CosimConnection-class.html">CosimConnection</a></li>
     <li class="self-crumb">CosimConnection constructor</li>
   </ol>
@@ -62,8 +62,8 @@
 
     <section class="multi-line-signature">
       
-      <span class="name ">CosimConnection</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="-param-socket"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.2.4/dart-io/Socket-class.html">Socket</a></span> <span class="parameter-name">socket</span>, </span></li>
-<li><span class="parameter" id="-param-disconnect">{<span class="type-annotation"><a href="https://api.dart.dev/stable/3.2.4/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span> <span class="parameter-name">disconnect</span>(<ol class="parameter-list"></ol>
+      <span class="name ">CosimConnection</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="-param-socket"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.3.0/dart-io/Socket-class.html">Socket</a></span> <span class="parameter-name">socket</span>, </span></li>
+<li><span class="parameter" id="-param-disconnect">{<span class="type-annotation"><a href="https://api.dart.dev/stable/3.3.0/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span> <span class="parameter-name">disconnect</span>(<ol class="parameter-list"></ol>
 ) = <span class="default-value">_defaultDisconnect</span>}</span></li>
 </ol>)
     </section>
@@ -78,7 +78,7 @@
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">CosimConnection</code></pre>
+  <pre class="language-dart"><code class="language-dart">CosimConnection(this.socket, {this.disconnect = _defaultDisconnect});</code></pre>
 </section>
 
 
