@@ -134,7 +134,6 @@ void main() async {
 
     await clk.nextPosedge;
 
-    Simulator.endSimulation();
-    await Simulator.simulationEnded;
+    await Simulator.endSimulation();
   });
 }
