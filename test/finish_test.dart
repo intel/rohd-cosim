@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2024 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // finish_test.dart
@@ -24,9 +24,7 @@ class FinishModule extends ExternalSystemVerilogModule with Cosim {
 
 Future<void> main() async {
   tearDown(() async {
-    // TODO(mkorbel1): await Simulator.reset() here, https://github.com/intel/rohd-cosim/issues/10
-    // ignore: unawaited_futures
-    Simulator.reset();
+    await Simulator.reset();
     await Cosim.reset();
   });
 
