@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2024 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // cosim.dart
@@ -410,7 +410,7 @@ mixin Cosim on ExternalSystemVerilogModule {
 
     // every clkStable, drive everything pending into the cosimulator
     Simulator.clkStable.listen((event) {
-      Simulator.injectAction(() async {
+      Simulator.injectEndOfTickAction(() async {
         await _sendPendingUpdates(throwOnUnexpectedEnd: throwOnUnexpectedEnd);
       });
     });

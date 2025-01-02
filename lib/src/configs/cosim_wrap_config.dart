@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2024 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // cosim_wrap_config.dart
@@ -131,14 +131,15 @@ class CosimWrapConfig extends CosimProcessConfig {
       {String? dumpWavesString}) {
     final wrapperVerilog = [
       'module $_wrapperName();',
-      ...registrees.entries.map((registreeEntry) =>
-          registreeEntry.value.instantiationVerilog(
-            'dont_care',
-            registreeEntry.key,
-            // ignore: invalid_use_of_protected_member
-            registreeEntry.value.inputs.map((key, value) => MapEntry(key, '')),
-            registreeEntry.value.outputs.map((key, value) => MapEntry(key, '')),
-          )),
+      ...registrees.entries
+          .map((registreeEntry) => registreeEntry.value.instantiationVerilog(
+                'dont_care',
+                registreeEntry.key,
+                {
+                  ...registreeEntry.value.inputs,
+                  ...registreeEntry.value.outputs,
+                }.map((key, value) => MapEntry(key, '')),
+              )),
       if (dumpWavesString != null) dumpWavesString,
       'endmodule'
     ].join('\n');
