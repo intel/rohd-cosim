@@ -17,7 +17,7 @@ import rohd_connector
 import cocotb
 
 # pylint: disable=broad-exception-caught, multiple-statements
-# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements
+# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements, too-many-positional-arguments
 # pylint: disable=consider-using-with
 
 

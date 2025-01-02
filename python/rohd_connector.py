@@ -19,7 +19,7 @@ from cocotb.triggers import Timer
 from cocotb.types import LogicArray
 
 # pylint: disable=broad-exception-caught, multiple-statements
-# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements, too-many-instance-attributes
+# pylint: disable=too-many-arguments, too-many-locals, too-many-branches, too-many-statements, too-many-instance-attributes, too-many-positional-arguments
 
 
 class RohdConnector:
