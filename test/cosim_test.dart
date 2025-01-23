@@ -80,7 +80,8 @@ Future<void> main() async {
     final mod = ExampleTopModule(a);
     await mod.build();
 
-    await CosimTestingInfrastructure.connectCosim('simple_push_n_check');
+    await CosimTestingInfrastructure.connectCosim('simple_push_n_check',
+        systemVerilogSimulator: SystemVerilogSimulator.verilator);
 
     Simulator.registerAction(2, () {
       a.put(1);

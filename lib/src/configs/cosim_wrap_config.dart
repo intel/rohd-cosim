@@ -17,7 +17,10 @@ enum SystemVerilogSimulator {
   icarus,
 
   /// Synopsys VCS
-  vcs
+  vcs,
+
+  /// Verilator
+  verilator,
 }
 
 abstract class _SystemVerilogSimulatorWaveDumpConfiguration {
@@ -90,6 +93,7 @@ class CosimWrapConfig extends CosimProcessConfig {
             _SystemVerilogSimulatorWaveDumpConfiguration.icarusVcdDump(
                 top: _wrapperName);
       } else {
+        //TODO: support verilator wave dumps
         throw Exception('Not sure how to dump waves for simulator'
             ' "${systemVerilogSimulator.name}".');
       }

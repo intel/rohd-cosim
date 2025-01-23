@@ -16,7 +16,7 @@ import 'package:logging/logging.dart';
 import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';
 
-class CosimTestingInfrastructure {
+abstract class CosimTestingInfrastructure {
   static const _tmpCosimDir = 'tmp_cosim';
 
   /// Connects the cosimulation, optionally with [enableLogging] and
@@ -29,6 +29,8 @@ class CosimTestingInfrastructure {
     bool enableLogging = false,
     bool dumpWaves = false,
     bool cleanupAfterSimulationEnds = true,
+    SystemVerilogSimulator systemVerilogSimulator =
+        SystemVerilogSimulator.icarus,
   }) async {
     if (enableLogging) {
       Logger.root.level = Level.ALL;
@@ -38,8 +40,8 @@ class CosimTestingInfrastructure {
     }
 
     await Cosim.connectCosimulation(CosimWrapConfig(
-      SystemVerilogSimulator.icarus,
-      directory: '$_tmpCosimDir/$testName',
+      systemVerilogSimulator,
+      directory: '$_tmpCosimDir/${systemVerilogSimulator.name}_$testName',
       enableLogging: enableLogging,
       dumpWaves: dumpWaves,
     ));
