@@ -54,7 +54,6 @@ Future<void> main() async {
       var unexpectedEnd = false;
       try {
         await Simulator.run();
-        print('RUN DONE');
       } on UnexpectedEndOfSimulation {
         unexpectedEnd = true;
       }

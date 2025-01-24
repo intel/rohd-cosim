@@ -37,59 +37,67 @@ void main() {
     await Cosim.reset();
   });
 
-  test('sampling', () async {
-    final pushValid = Logic();
-    final pushData = Logic(width: 8);
-    final clk = SimpleClockGenerator(10).clk;
-    final mod = SamplingModule(clk, pushValid, pushData);
-    await mod.build();
+  CosimTestingInfrastructure.testPerSimulator((sim) {
+    test('sampling', () async {
+      final pushValid = Logic();
+      final pushData = Logic(width: 8);
+      final clk = SimpleClockGenerator(10).clk;
+      final mod = SamplingModule(clk, pushValid, pushData);
+      await mod.build();
 
-    var count = 0;
-    clk.posedge.listen((event) {
-      Simulator.injectAction(() {
-        pushValid.put(count.isEven);
-        pushData.put(count++);
+      var count = 0;
+      clk.posedge.listen((event) {
+        Simulator.injectAction(() {
+          pushValid.put(count.isEven);
+          pushData.put(count++);
+        });
       });
-    });
 
-    const dirName = 'sampling_test';
+      const testName = 'sampling_test';
+      final dirName = CosimTestingInfrastructure.tempDirName(testName, sim);
 
-    await CosimTestingInfrastructure.connectCosim(dirName,
-        dumpWaves: true, cleanupAfterSimulationEnds: false);
+      await CosimTestingInfrastructure.connectCosim(testName,
+          dumpWaves: true,
+          cleanupAfterSimulationEnds: false,
+          systemVerilogSimulator: sim);
 
-    Simulator.setMaxSimTime(100);
+      Simulator.setMaxSimTime(100);
 
-    clk.negedge.listen((event) {
-      final drivenCount = count - 1;
-      if (drivenCount > 0) {
+      clk.negedge.listen((event) {
+        final drivenCount = count - 1;
+        if (drivenCount > 0) {
+          expect(
+            mod.sampled.value.toInt(),
+            equals(drivenCount.isEven ? drivenCount - 2 : drivenCount - 1),
+          );
+        }
+      });
+
+      await Simulator.run();
+
+      // wait for VCD to finish populating, takes time for icarus for some reason
+      await Future<void>.delayed(const Duration(seconds: 2));
+
+      expect(File('$dirName/waves.vcd').existsSync(), isTrue);
+
+      final vcdContents = File('$dirName/waves.vcd').readAsStringSync();
+      for (var countI = 1; countI < 10; countI++) {
+        final checkTime = (10 * countI + 5) * 1000;
+        final expectedValue =
+            LogicValue.ofInt(countI.isEven ? countI - 2 : countI - 1, 8);
         expect(
-          mod.sampled.value.toInt(),
-          equals(drivenCount.isEven ? drivenCount - 2 : drivenCount - 1),
-        );
+            VcdParser.confirmValue(
+              vcdContents,
+              'sampled',
+              checkTime,
+              expectedValue,
+            ),
+            isTrue,
+            reason:
+                'at $countI @$checkTime: expected `sampled` == $expectedValue');
       }
+
+      await CosimTestingInfrastructure.cleanupCosim(testName, sim);
     });
-
-    await Simulator.run();
-
-    // wait for VCD to finish populating, takes time for icarus for some reason
-    await Future<void>.delayed(const Duration(seconds: 2));
-
-    expect(File('tmp_cosim/$dirName/waves.vcd').existsSync(), isTrue);
-
-    final vcdContents = File('tmp_cosim/$dirName/waves.vcd').readAsStringSync();
-    for (var countI = 1; countI < 10; countI++) {
-      expect(
-        VcdParser.confirmValue(
-          vcdContents,
-          'sampled',
-          (10 * countI + 5) * 1000,
-          LogicValue.ofInt(countI.isEven ? countI - 2 : countI - 1, 8),
-        ),
-        isTrue,
-      );
-    }
-
-    await CosimTestingInfrastructure.cleanupCosim(
-        dirName, SystemVerilogSimulator.icarus);
   });
 }
