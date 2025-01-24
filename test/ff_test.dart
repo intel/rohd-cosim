@@ -59,8 +59,6 @@ Future<void> main() async {
         ];
         await SimCompare.checkFunctionalVector(mod, vectors);
       });
-
-      //TODO: why isn't stuff getting deleted at the end?
     });
   }
 }

@@ -48,8 +48,9 @@ abstract class CosimTestingInfrastructure {
 
     if (cleanupAfterSimulationEnds) {
       // wait a second to do it so that the SV simulator can shut down
-      unawaited(Simulator.simulationEnded
-          .then((_) => cleanupCosim(testName, systemVerilogSimulator)));
+      Simulator.registerEndOfSimulationAction(() async {
+        await cleanupCosim(testName, systemVerilogSimulator);
+      });
     }
   }
 
