@@ -33,19 +33,24 @@ Future<void> main() async {
     await Cosim.reset();
   });
 
-  test('simple bus', () async {
-    final mod = CosimBusMod(Logic(width: 4));
-    await mod.build();
+  CosimTestingInfrastructure.testPerSimulator((sim) {
+    test('simple bus', () async {
+      final mod = CosimBusMod(Logic(width: 4));
+      await mod.build();
 
-    const dirName = 'simple_bus';
+      const dirName = 'simple_bus';
 
-    await CosimTestingInfrastructure.connectCosim(dirName);
+      await CosimTestingInfrastructure.connectCosim(dirName,
+          systemVerilogSimulator: sim);
 
-    final vectors = [
-      Vector({'a': 0}, {'b': 0}),
-      Vector({'a': LogicValue.ofString('01xz')},
-          {'b': LogicValue.ofString('01xz')}),
-    ];
-    await SimCompare.checkFunctionalVector(mod, vectors);
+      final vectors = [
+        Vector({'a': 0}, {'b': 0}),
+        Vector({'a': 0x3}, {'b': 0x3}),
+        if (sim != SystemVerilogSimulator.verilator)
+          Vector({'a': LogicValue.ofString('01xz')},
+              {'b': LogicValue.ofString('01xz')}),
+      ];
+      await SimCompare.checkFunctionalVector(mod, vectors);
+    });
   });
 }
