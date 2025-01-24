@@ -75,7 +75,7 @@ void main() {
 
       await Simulator.run();
 
-      // wait for VCD to finish populating, takes time for icarus for some reason
+      // wait for VCD to finish populating, takes time for some reason
       await Future<void>.delayed(const Duration(seconds: 2));
 
       expect(File('$dirName/waves.vcd').existsSync(), isTrue);
