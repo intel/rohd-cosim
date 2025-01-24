@@ -28,6 +28,7 @@ sudo apt-get install --yes zlibc zlib1g zlib1g-dev || true  # Ubuntu only (ignor
 
 sudo apt-get install --yes ccache  # If present at build, needed for run
 sudo apt-get install --yes mold  # If present at build, needed for run
+sudo apt-get install --yes libunwind-dev  # Install dependency for libgoogle-perftools-dev
 sudo apt-get install --yes libgoogle-perftools-dev numactl
 
 sudo apt-get install --yes perl-doc
