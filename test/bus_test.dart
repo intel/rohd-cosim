@@ -47,7 +47,5 @@ Future<void> main() async {
           {'b': LogicValue.ofString('01xz')}),
     ];
     await SimCompare.checkFunctionalVector(mod, vectors);
-
-    await CosimTestingInfrastructure.cleanupCosim(dirName);
   });
 }

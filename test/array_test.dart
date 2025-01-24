@@ -75,8 +75,6 @@ Future<void> main() async {
         ...walkingOnes(6)
       ];
       await SimCompare.checkFunctionalVector(mod, vectors);
-
-      await CosimTestingInfrastructure.cleanupCosim(dirName);
     });
 
     test('2 packed, 1 unpacked', () async {
@@ -95,8 +93,6 @@ Future<void> main() async {
       ];
 
       await SimCompare.checkFunctionalVector(mod, vectors);
-
-      await CosimTestingInfrastructure.cleanupCosim(dirName);
     });
 
     test('2 packed, 2 unpacked', () async {
@@ -115,8 +111,6 @@ Future<void> main() async {
         ...walkingOnes(120),
       ];
       await SimCompare.checkFunctionalVector(mod, vectors);
-
-      await CosimTestingInfrastructure.cleanupCosim(dirName);
     });
   });
 }

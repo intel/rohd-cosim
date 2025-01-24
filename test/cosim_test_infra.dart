@@ -41,20 +41,25 @@ abstract class CosimTestingInfrastructure {
 
     await Cosim.connectCosimulation(CosimWrapConfig(
       systemVerilogSimulator,
-      directory: '$_tmpCosimDir/${systemVerilogSimulator.name}_$testName',
+      directory: _dirName(testName, systemVerilogSimulator),
       enableLogging: enableLogging,
       dumpWaves: dumpWaves,
     ));
 
     if (cleanupAfterSimulationEnds) {
       // wait a second to do it so that the SV simulator can shut down
-      unawaited(Simulator.simulationEnded.then((_) => cleanupCosim(testName)));
+      unawaited(Simulator.simulationEnded
+          .then((_) => cleanupCosim(testName, systemVerilogSimulator)));
     }
   }
 
+  static String _dirName(String testName, SystemVerilogSimulator simulator) =>
+      '$_tmpCosimDir/${simulator.name}_$testName';
+
   /// Deletes temporary files created by [connectCosim].
-  static Future<void> cleanupCosim(String testName) async {
-    await delayedDeleteDirectory('$_tmpCosimDir/$testName');
+  static Future<void> cleanupCosim(
+      String testName, SystemVerilogSimulator simulator) async {
+    await delayedDeleteDirectory(_dirName(testName, simulator));
   }
 
   /// Deletes a directory at [directoryPath] (recursively) after

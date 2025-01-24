@@ -49,6 +49,7 @@ Future<void> main() async {
     // expect the unexpected
     expect(unexpectedEnd, isTrue);
 
-    await CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(
+        dirName, SystemVerilogSimulator.icarus);
   });
 }

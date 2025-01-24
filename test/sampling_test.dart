@@ -89,6 +89,7 @@ void main() {
       );
     }
 
-    await CosimTestingInfrastructure.cleanupCosim(dirName);
+    await CosimTestingInfrastructure.cleanupCosim(
+        dirName, SystemVerilogSimulator.icarus);
   });
 }

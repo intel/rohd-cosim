@@ -212,7 +212,7 @@ Future<void> main() async {
                 .existsSync(),
             isTrue);
 
-        await CosimTestingInfrastructure.cleanupCosim(dirName);
+        await CosimTestingInfrastructure.cleanupCosim(dirName, sim);
       });
     });
 
