@@ -157,5 +157,5 @@ The diagram below shows how the port configuration connects to your simulation. 
 2022 September 9  
 Author: Max Korbel <<max.korbel@intel.com>>
 
-Copyright (C) 2022-2023 Intel Corporation  
+Copyright (C) 2022-2025 Intel Corporation  
 SPDX-License-Identifier: BSD-3-Clause

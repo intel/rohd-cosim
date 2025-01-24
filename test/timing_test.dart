@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // timing_test.dart
@@ -36,126 +36,131 @@ void main() {
     await Cosim.reset();
   });
 
-  test('multiple injections arrive at proper timestamp', () async {
-    final reset = Logic();
-    final clk = SimpleClockGenerator(10).clk;
-    final mod = TimingTestModule(clk, reset);
-    await mod.build();
+  CosimTestingInfrastructure.testPerSimulator((sim) {
+    test('multiple injections arrive at proper timestamp', () async {
+      final reset = Logic();
+      final clk = SimpleClockGenerator(10).clk;
+      final mod = TimingTestModule(clk, reset);
+      await mod.build();
 
-    const dirName = 'multi_inject_time';
+      const testName = 'multi_inject_time';
+      final dirName = CosimTestingInfrastructure.tempDirName(testName, sim);
 
-    await CosimTestingInfrastructure.connectCosim(dirName,
-        dumpWaves: true, cleanupAfterSimulationEnds: false);
+      await CosimTestingInfrastructure.connectCosim(testName,
+          dumpWaves: true, cleanupAfterSimulationEnds: false);
 
-    Simulator.registerAction(12, () {
-      reset.put(0);
+      Simulator.registerAction(12, () {
+        reset.put(0);
+      });
+      Simulator.registerAction(22, () {
+        reset.put(1);
+      });
+      Simulator.registerAction(37, () {
+        reset.put(0);
+      });
+
+      Simulator.setMaxSimTime(100);
+
+      await Simulator.run();
+
+      // wait for VCD to finish populating, takes time for icarus for some reason
+      await Future<void>.delayed(const Duration(seconds: 2));
+
+      expect(File('$dirName/waves.vcd').existsSync(), isTrue);
+
+      final vcdContents = File('$dirName/waves.vcd').readAsStringSync();
+
+      for (var t = 1; t < 100; t++) {
+        final expectedClkValue = t % 10 < 5 ? LogicValue.zero : LogicValue.one;
+
+        final vcdTime = t * 1000;
+        expect(
+            VcdParser.confirmValue(
+                vcdContents, 'clk', vcdTime, expectedClkValue),
+            isTrue,
+            reason: 'Expected clk to be $expectedClkValue at $vcdTime.');
+
+        final expectedResetValue = t < 12
+            ? LogicValue.z
+            : t < 22
+                ? LogicValue.zero
+                : t < 37
+                    ? LogicValue.one
+                    : LogicValue.zero;
+        VcdParser.confirmValue(
+            vcdContents, 'reset', vcdTime, expectedResetValue);
+      }
+
+      await CosimTestingInfrastructure.cleanupCosim(
+          testName, SystemVerilogSimulator.icarus);
     });
-    Simulator.registerAction(22, () {
-      reset.put(1);
-    });
-    Simulator.registerAction(37, () {
-      reset.put(0);
-    });
 
-    Simulator.setMaxSimTime(100);
+    test('inject on edge shows up on same edge', () async {
+      final reset = Logic()..put(0);
+      final clk = SimpleClockGenerator(10).clk;
+      final mod = TimingTestModule(clk, reset);
 
-    await Simulator.run();
+      await mod.build();
 
-    // wait for VCD to finish populating, takes time for icarus for some reason
-    await Future<void>.delayed(const Duration(seconds: 2));
+      const testName = 'edge_injection';
+      final dirName = CosimTestingInfrastructure.tempDirName(testName, sim);
 
-    expect(File('tmp_cosim/$dirName/waves.vcd').existsSync(), isTrue);
+      await CosimTestingInfrastructure.connectCosim(testName,
+          dumpWaves: true, cleanupAfterSimulationEnds: false);
 
-    final vcdContents = File('tmp_cosim/$dirName/waves.vcd').readAsStringSync();
+      Simulator.setMaxSimTime(100);
 
-    for (var t = 1; t < 100; t++) {
-      final expectedClkValue = t % 10 < 5 ? LogicValue.zero : LogicValue.one;
+      clk.posedge.listen((event) {
+        reset.inject(~reset.value);
+      });
 
-      final vcdTime = t * 1000;
+      await Simulator.run();
+
+      // wait for VCD to finish populating, takes time for icarus for some reason
+      await Future<void>.delayed(const Duration(seconds: 2));
+
+      expect(File('$dirName/waves.vcd').existsSync(), isTrue);
+
+      final vcdContents = File('$dirName/waves.vcd').readAsStringSync();
+
+      // the edges are off by some #steps since they come after the edge
+      expect(VcdParser.confirmValue(vcdContents, 'reset', 5005, LogicValue.one),
+          isTrue);
       expect(
-          VcdParser.confirmValue(vcdContents, 'clk', vcdTime, expectedClkValue),
-          isTrue,
-          reason: 'Expected clk to be $expectedClkValue at $vcdTime.');
+          VcdParser.confirmValue(vcdContents, 'reset', 10000, LogicValue.one),
+          isTrue);
+      expect(
+          VcdParser.confirmValue(vcdContents, 'reset', 15005, LogicValue.zero),
+          isTrue);
+      expect(
+          VcdParser.confirmValue(vcdContents, 'reset', 20000, LogicValue.zero),
+          isTrue);
 
-      final expectedResetValue = t < 12
-          ? LogicValue.z
-          : t < 22
-              ? LogicValue.zero
-              : t < 37
-                  ? LogicValue.one
-                  : LogicValue.zero;
-      VcdParser.confirmValue(vcdContents, 'reset', vcdTime, expectedResetValue);
-    }
-
-    await CosimTestingInfrastructure.cleanupCosim(
-        dirName, SystemVerilogSimulator.icarus);
-  });
-
-  test('inject on edge shows up on same edge', () async {
-    final reset = Logic()..put(0);
-    final clk = SimpleClockGenerator(10).clk;
-    final mod = TimingTestModule(clk, reset);
-
-    await mod.build();
-
-    const dirName = 'edge_injection';
-
-    await CosimTestingInfrastructure.connectCosim(dirName,
-        dumpWaves: true, cleanupAfterSimulationEnds: false);
-
-    Simulator.setMaxSimTime(100);
-
-    clk.posedge.listen((event) {
-      reset.inject(~reset.value);
+      await CosimTestingInfrastructure.cleanupCosim(
+          testName, SystemVerilogSimulator.icarus);
     });
 
-    await Simulator.run();
+    test('initially driven signals show up properly', () async {
+      final clk = SimpleClockGenerator(10).clk;
+      final mod = TimingTestModule(clk, Logic());
 
-    // wait for VCD to finish populating, takes time for icarus for some reason
-    await Future<void>.delayed(const Duration(seconds: 2));
+      await mod.build();
 
-    expect(File('tmp_cosim/$dirName/waves.vcd').existsSync(), isTrue);
+      const dirName = 'init_drive';
 
-    final vcdContents = File('tmp_cosim/$dirName/waves.vcd').readAsStringSync();
+      await CosimTestingInfrastructure.connectCosim(dirName);
 
-    // the edges are off by some #steps since they come after the edge
-    expect(VcdParser.confirmValue(vcdContents, 'reset', 5005, LogicValue.one),
-        isTrue);
-    expect(VcdParser.confirmValue(vcdContents, 'reset', 10000, LogicValue.one),
-        isTrue);
-    expect(VcdParser.confirmValue(vcdContents, 'reset', 15005, LogicValue.zero),
-        isTrue);
-    expect(VcdParser.confirmValue(vcdContents, 'reset', 20000, LogicValue.zero),
-        isTrue);
+      Simulator.setMaxSimTime(100);
 
-    await CosimTestingInfrastructure.cleanupCosim(
-        dirName, SystemVerilogSimulator.icarus);
-  });
+      Simulator.registerAction(1, () {
+        expect(mod.initOut.value, equals(LogicValue.ofInt(0xa5, 8)));
+      });
 
-  test('initially driven signals show up properly', () async {
-    final clk = SimpleClockGenerator(10).clk;
-    final mod = TimingTestModule(clk, Logic());
+      Simulator.registerAction(77, () {
+        expect(mod.initOut.value, equals(LogicValue.ofInt(0xa5, 8)));
+      });
 
-    await mod.build();
-
-    const dirName = 'init_drive';
-
-    await CosimTestingInfrastructure.connectCosim(dirName,
-        cleanupAfterSimulationEnds: false);
-
-    Simulator.setMaxSimTime(100);
-
-    Simulator.registerAction(1, () {
-      expect(mod.initOut.value, equals(LogicValue.ofInt(0xa5, 8)));
+      await Simulator.run();
     });
-
-    Simulator.registerAction(77, () {
-      expect(mod.initOut.value, equals(LogicValue.ofInt(0xa5, 8)));
-    });
-
-    await Simulator.run();
-
-    await CosimTestingInfrastructure.cleanupCosim(
-        dirName, SystemVerilogSimulator.icarus);
   });
 }

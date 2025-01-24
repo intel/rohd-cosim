@@ -1,5 +1,5 @@
 """
-Copyright (C) 2023-2024 Intel Corporation
+Copyright (C) 2023-2025 Intel Corporation
 SPDX-License-Identifier: BSD-3-Clause
 
 rohd_port_connector.py
@@ -119,9 +119,7 @@ async def launch_on_port(
 
             if enable_logging:
                 print("Port connector loop has completed!")
-            if enable_logging:
                 print(f"Dart thread alive? -- {dart_process.poll() is None}")
-            if enable_logging:
                 print(f"Connection task done? -- {connection_task.done()}")
 
             try:
