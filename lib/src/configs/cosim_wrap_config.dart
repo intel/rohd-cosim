@@ -34,8 +34,7 @@ abstract class _SystemVerilogSimulatorWaveDumpConfiguration {
   end
 ''';
 
-  static String icarusVcdDump(
-          {required String top, String vcdName = 'waves.vcd'}) =>
+  static String vcdDump({required String top, String vcdName = 'waves.vcd'}) =>
       '''
 initial
  begin
@@ -88,12 +87,11 @@ class CosimWrapConfig extends CosimProcessConfig {
         dumpWavesString =
             _SystemVerilogSimulatorWaveDumpConfiguration.vcsFsdbDump(
                 top: _wrapperName);
-      } else if (systemVerilogSimulator == SystemVerilogSimulator.icarus) {
-        dumpWavesString =
-            _SystemVerilogSimulatorWaveDumpConfiguration.icarusVcdDump(
-                top: _wrapperName);
+      } else if (systemVerilogSimulator == SystemVerilogSimulator.icarus ||
+          systemVerilogSimulator == SystemVerilogSimulator.verilator) {
+        dumpWavesString = _SystemVerilogSimulatorWaveDumpConfiguration.vcdDump(
+            top: _wrapperName);
       } else {
-        //TODO: support verilator wave dumps
         throw Exception('Not sure how to dump waves for simulator'
             ' "${systemVerilogSimulator.name}".');
       }
@@ -110,6 +108,7 @@ class CosimWrapConfig extends CosimProcessConfig {
       directory: directory,
       simulator: systemVerilogSimulator,
       registrees: Cosim.registrees,
+      dumpWaves: dumpWaves,
     );
   }
 
@@ -159,10 +158,12 @@ class CosimWrapConfig extends CosimProcessConfig {
 
   /// Generates a Makefile that can build and simulate the design
   /// for cosimulation.
-  static void _createMakefile(
-      {required SystemVerilogSimulator simulator,
-      required String directory,
-      required Map<String, Cosim> registrees}) {
+  static void _createMakefile({
+    required SystemVerilogSimulator simulator,
+    required String directory,
+    required Map<String, Cosim> registrees,
+    required bool dumpWaves,
+  }) {
     final verilogSources = Set.of(
         registrees.values.map((e) => e.verilogSources ?? []).expand((e) => e));
     final filelists = Set.of(
@@ -181,6 +182,8 @@ class CosimWrapConfig extends CosimProcessConfig {
       ...filelists.map((e) => 'COMPILE_ARGS += -f $e\n'),
       ...extraArgs.map((e) => 'EXTRA_ARGS += $e\n'),
       ...compileArgs.map((e) => 'COMPILE_ARGS += $e\n'),
+      if (dumpWaves && simulator == SystemVerilogSimulator.verilator)
+        'EXTRA_ARGS += --trace',
       'TOPLEVEL = $_wrapperName',
       'MODULE = ${Cosim.defaultPythonModuleName}',
       r'include $(shell cocotb-config --makefiles)/Makefile.sim'

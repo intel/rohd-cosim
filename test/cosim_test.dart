@@ -190,7 +190,8 @@ Future<void> main() async {
         await CosimTestingInfrastructure.connectCosim(dirName,
             dumpWaves: true,
             cleanupAfterSimulationEnds: false,
-            systemVerilogSimulator: sim);
+            systemVerilogSimulator: sim,
+            enableLogging: true);
 
         Simulator.registerAction(2, () {
           a.put(1);
