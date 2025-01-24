@@ -36,8 +36,7 @@ abstract class CosimTestingInfrastructure {
     if (enableLogging) {
       Logger.root.level = Level.ALL;
       final loggerSubscription = Logger.root.onRecord.listen(print);
-      unawaited(
-          Simulator.simulationEnded.then((_) => loggerSubscription.cancel()));
+      Simulator.registerEndOfSimulationAction(loggerSubscription.cancel);
     }
 
     await Cosim.connectCosimulation(CosimWrapConfig(
