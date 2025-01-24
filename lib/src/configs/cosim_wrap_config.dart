@@ -99,6 +99,8 @@ class CosimWrapConfig extends CosimProcessConfig {
       }
     }
 
+    //TODO: cleanup run directory before running?
+
     _createSVWrapper(
       directory,
       Cosim.registrees,
@@ -110,6 +112,8 @@ class CosimWrapConfig extends CosimProcessConfig {
       registrees: Cosim.registrees,
     );
   }
+
+  //TODO: look for VTop floating around in htop, left over processes
 
   @override
   Future<Process> startCosimProcess(String directory) => Process.start(
