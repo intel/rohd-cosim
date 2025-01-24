@@ -21,10 +21,10 @@ echo "Installing Verilator $VERILATOR_VERSION"
 
 sudo apt-get install --yes git help2man perl python3 make
 sudo apt-get install --yes g++  # Alternatively, clang
-sudo apt-get install --yes libgz  # Non-Ubuntu (ignore if gives error)
-sudo apt-get install --yes libfl2  # Ubuntu only (ignore if gives error)
-sudo apt-get install --yes libfl-dev  # Ubuntu only (ignore if gives error)
-sudo apt-get install --yes zlibc zlib1g zlib1g-dev  # Ubuntu only (ignore if gives error)
+sudo apt-get install --yes libgz || true  # Non-Ubuntu (ignore if gives error)
+sudo apt-get install --yes libfl2 || true  # Ubuntu only (ignore if gives error)
+sudo apt-get install --yes libfl-dev || true  # Ubuntu only (ignore if gives error)
+sudo apt-get install --yes zlibc zlib1g zlib1g-dev || true  # Ubuntu only (ignore if gives error)
 
 sudo apt-get install --yes ccache  # If present at build, needed for run
 sudo apt-get install --yes mold  # If present at build, needed for run
