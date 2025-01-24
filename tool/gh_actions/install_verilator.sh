@@ -48,4 +48,4 @@ unset VERILATOR_ROOT
 ./configure
 
 make -j `nproc`
-make install
+sudo make install
