@@ -34,31 +34,26 @@ Future<void> main() async {
     await Cosim.reset();
   });
 
-  for (final sim in [
-    SystemVerilogSimulator.icarus,
-    SystemVerilogSimulator.verilator
-  ]) {
-    group(sim.name, () {
-      test('simple ff', () async {
-        final d = Logic();
-        final clk = SimpleClockGenerator(10).clk;
-        final mod = CosimFFMod(clk, d);
-        await mod.build();
+  CosimTestingInfrastructure.testPerSimulator((sim) {
+    test('simple ff', () async {
+      final d = Logic();
+      final clk = SimpleClockGenerator(10).clk;
+      final mod = CosimFFMod(clk, d);
+      await mod.build();
 
-        const dirName = 'simple_ff';
+      const dirName = 'simple_ff';
 
-        await CosimTestingInfrastructure.connectCosim(dirName,
-            systemVerilogSimulator: sim);
+      await CosimTestingInfrastructure.connectCosim(dirName,
+          systemVerilogSimulator: sim);
 
-        final vectors = [
-          Vector({'d': 0}, {}),
-          Vector({'d': 1}, {'q': 0}),
-          Vector({'d': 1}, {'q': 1}),
-          Vector({'d': 0}, {'q': 1}),
-          Vector({'d': 0}, {'q': 0}),
-        ];
-        await SimCompare.checkFunctionalVector(mod, vectors);
-      });
+      final vectors = [
+        Vector({'d': 0}, {}),
+        Vector({'d': 1}, {'q': 0}),
+        Vector({'d': 1}, {'q': 1}),
+        Vector({'d': 0}, {'q': 1}),
+        Vector({'d': 0}, {'q': 0}),
+      ];
+      await SimCompare.checkFunctionalVector(mod, vectors);
     });
-  }
+  });
 }

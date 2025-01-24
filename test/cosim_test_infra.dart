@@ -15,6 +15,7 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';
+import 'package:test/test.dart';
 
 abstract class CosimTestingInfrastructure {
   static const _tmpCosimDir = 'tmp_cosim';
@@ -54,6 +55,19 @@ abstract class CosimTestingInfrastructure {
     }
   }
 
+  static void testPerSimulator(
+      void Function(SystemVerilogSimulator sim) buildTests) {
+    for (final sim in [
+      SystemVerilogSimulator.icarus,
+      SystemVerilogSimulator.verilator
+    ]) {
+      group(sim.name, () {
+        buildTests(sim);
+      });
+    }
+  }
+
+  /// Constructs the temporary directory path for a test.
   static String _dirName(String testName, SystemVerilogSimulator simulator) =>
       '$_tmpCosimDir/${simulator.name}_$testName';
 

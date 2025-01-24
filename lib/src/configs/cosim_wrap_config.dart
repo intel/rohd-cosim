@@ -20,6 +20,10 @@ enum SystemVerilogSimulator {
   vcs,
 
   /// Verilator
+  ///
+  /// Known limitations to be aware of:
+  /// - Verilator does not support invalid (`x`, `z`) values in the simulation.
+  /// - Support for unpacked array ports is limited.
   verilator,
 }
 

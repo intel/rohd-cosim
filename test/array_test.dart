@@ -50,67 +50,80 @@ Future<void> main() async {
     await Cosim.reset();
   });
 
-  group('cosim array', () {
-    List<Vector> walkingOnes(int width) {
-      final vectors = <Vector>[];
-      for (var i = 0; i < width; i++) {
-        final shiftedOne = LogicValue.ofInt(1, width) << i;
-        vectors.add(Vector({'a': shiftedOne}, {'b': shiftedOne}));
+  CosimTestingInfrastructure.testPerSimulator((sim) {
+    group('cosim array', () {
+      List<Vector> walkingOnes(int width) {
+        final vectors = <Vector>[];
+        for (var i = 0; i < width; i++) {
+          final shiftedOne = LogicValue.ofInt(1, width) << i;
+          vectors.add(Vector({'a': shiftedOne}, {'b': shiftedOne}));
+        }
+        return vectors;
       }
-      return vectors;
-    }
 
-    test('2 packed, 0 unpacked', () async {
-      final mod = CosimArrayMod(Logic(width: 6));
-      await mod.build();
+      test('2 packed, 0 unpacked', () async {
+        final mod = CosimArrayMod(Logic(width: 6));
+        await mod.build();
 
-      const dirName = 'simple_array_2p0u';
+        const dirName = 'simple_array_2p0u';
 
-      await CosimTestingInfrastructure.connectCosim(dirName);
+        await CosimTestingInfrastructure.connectCosim(dirName,
+            systemVerilogSimulator: sim);
 
-      final vectors = [
-        Vector({'a': 0}, {'b': 0}),
-        Vector({'a': LogicValue.ofString('01xz10')},
-            {'b': LogicValue.ofString('01xz10')}),
-        ...walkingOnes(6)
-      ];
-      await SimCompare.checkFunctionalVector(mod, vectors);
-    });
+        final vectors = [
+          Vector({'a': 0}, {'b': 0}),
+          if (sim != SystemVerilogSimulator.verilator)
+            Vector({'a': LogicValue.ofString('01xz10')},
+                {'b': LogicValue.ofString('01xz10')}),
+          ...walkingOnes(6)
+        ];
+        await SimCompare.checkFunctionalVector(mod, vectors);
+      });
 
-    test('2 packed, 1 unpacked', () async {
-      final mod = CosimArrayMod(Logic(width: 6 * 4), numUnpackedDimensions: 1);
-      await mod.build();
+      if (sim != SystemVerilogSimulator.verilator) {
+        // TODO(mkorbel1): enable these tests when verilator and cocotb supports
+        //  unpacked array ports, https://github.com/cocotb/cocotb/issues/3446
+        test('2 packed, 1 unpacked', () async {
+          final mod =
+              CosimArrayMod(Logic(width: 6 * 4), numUnpackedDimensions: 1);
+          await mod.build();
 
-      const dirName = 'simple_array_2p1u';
+          const dirName = 'simple_array_2p1u';
 
-      await CosimTestingInfrastructure.connectCosim(dirName);
+          await CosimTestingInfrastructure.connectCosim(dirName,
+              systemVerilogSimulator: sim);
 
-      final vectors = [
-        Vector({'a': 0}, {'b': 0}),
-        Vector({'a': LogicValue.ofString('01xz10' * 4)},
-            {'b': LogicValue.ofString('01xz10' * 4)}),
-        ...walkingOnes(24),
-      ];
+          final vectors = [
+            Vector({'a': 0}, {'b': 0}),
+            if (sim != SystemVerilogSimulator.verilator)
+              Vector({'a': LogicValue.ofString('01xz10' * 4)},
+                  {'b': LogicValue.ofString('01xz10' * 4)}),
+            ...walkingOnes(24),
+          ];
 
-      await SimCompare.checkFunctionalVector(mod, vectors);
-    });
+          await SimCompare.checkFunctionalVector(mod, vectors);
+        });
 
-    test('2 packed, 2 unpacked', () async {
-      final mod =
-          CosimArrayMod(Logic(width: 6 * 4 * 5), numUnpackedDimensions: 2);
-      await mod.build();
+        test('2 packed, 2 unpacked', () async {
+          final mod =
+              CosimArrayMod(Logic(width: 6 * 4 * 5), numUnpackedDimensions: 2);
+          await mod.build();
 
-      const dirName = 'simple_array_2p2u';
+          const dirName = 'simple_array_2p2u';
 
-      await CosimTestingInfrastructure.connectCosim(dirName);
+          await CosimTestingInfrastructure.connectCosim(dirName,
+              systemVerilogSimulator: sim);
 
-      final vectors = [
-        Vector({'a': 0}, {'b': 0}),
-        Vector({'a': LogicValue.ofString('01xz10' * 4 * 5)},
-            {'b': LogicValue.ofString('01xz10' * 4 * 5)}),
-        ...walkingOnes(120),
-      ];
-      await SimCompare.checkFunctionalVector(mod, vectors);
+          final vectors = [
+            Vector({'a': 0}, {'b': 0}),
+            if (sim != SystemVerilogSimulator.verilator)
+              Vector({'a': LogicValue.ofString('01xz10' * 4 * 5)},
+                  {'b': LogicValue.ofString('01xz10' * 4 * 5)}),
+            ...walkingOnes(120),
+          ];
+          await SimCompare.checkFunctionalVector(mod, vectors);
+        });
+      }
     });
   });
 }
