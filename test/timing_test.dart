@@ -47,7 +47,9 @@ void main() {
       final dirName = CosimTestingInfrastructure.tempDirName(testName, sim);
 
       await CosimTestingInfrastructure.connectCosim(testName,
-          dumpWaves: true, cleanupAfterSimulationEnds: false);
+          dumpWaves: true,
+          cleanupAfterSimulationEnds: false,
+          systemVerilogSimulator: sim);
 
       Simulator.registerAction(12, () {
         reset.put(0);
@@ -63,7 +65,7 @@ void main() {
 
       await Simulator.run();
 
-      // wait for VCD to finish populating, takes time for icarus for some reason
+      // wait for VCD to finish populating, takes time for some reason
       await Future<void>.delayed(const Duration(seconds: 2));
 
       expect(File('$dirName/waves.vcd').existsSync(), isTrue);
@@ -81,18 +83,23 @@ void main() {
             reason: 'Expected clk to be $expectedClkValue at $vcdTime.');
 
         final expectedResetValue = t < 12
-            ? LogicValue.z
+            ? (sim == SystemVerilogSimulator.verilator
+                ? LogicValue.zero
+                : LogicValue.z)
             : t < 22
                 ? LogicValue.zero
                 : t < 37
                     ? LogicValue.one
                     : LogicValue.zero;
-        VcdParser.confirmValue(
-            vcdContents, 'reset', vcdTime, expectedResetValue);
+
+        expect(
+            VcdParser.confirmValue(
+                vcdContents, 'reset', vcdTime, expectedResetValue),
+            isTrue,
+            reason: 'Expected reset to be $expectedResetValue at $vcdTime.');
       }
 
-      await CosimTestingInfrastructure.cleanupCosim(
-          testName, SystemVerilogSimulator.icarus);
+      await CosimTestingInfrastructure.cleanupCosim(testName, sim);
     });
 
     test('inject on edge shows up on same edge', () async {
@@ -106,7 +113,9 @@ void main() {
       final dirName = CosimTestingInfrastructure.tempDirName(testName, sim);
 
       await CosimTestingInfrastructure.connectCosim(testName,
-          dumpWaves: true, cleanupAfterSimulationEnds: false);
+          dumpWaves: true,
+          cleanupAfterSimulationEnds: false,
+          systemVerilogSimulator: sim);
 
       Simulator.setMaxSimTime(100);
 
@@ -116,7 +125,7 @@ void main() {
 
       await Simulator.run();
 
-      // wait for VCD to finish populating, takes time for icarus for some reason
+      // wait for VCD to finish populating, can take some time for some reason
       await Future<void>.delayed(const Duration(seconds: 2));
 
       expect(File('$dirName/waves.vcd').existsSync(), isTrue);
@@ -136,8 +145,7 @@ void main() {
           VcdParser.confirmValue(vcdContents, 'reset', 20000, LogicValue.zero),
           isTrue);
 
-      await CosimTestingInfrastructure.cleanupCosim(
-          testName, SystemVerilogSimulator.icarus);
+      await CosimTestingInfrastructure.cleanupCosim(testName, sim);
     });
 
     test('initially driven signals show up properly', () async {
@@ -148,7 +156,8 @@ void main() {
 
       const dirName = 'init_drive';
 
-      await CosimTestingInfrastructure.connectCosim(dirName);
+      await CosimTestingInfrastructure.connectCosim(dirName,
+          systemVerilogSimulator: sim);
 
       Simulator.setMaxSimTime(100);
 

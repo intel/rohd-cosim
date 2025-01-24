@@ -27,11 +27,10 @@ abstract class CosimTestingInfrastructure {
   /// [cleanupAfterSimulationEnds] it will do it automatically for you.
   static Future<void> connectCosim(
     String testName, {
+    required SystemVerilogSimulator systemVerilogSimulator,
     bool enableLogging = false,
     bool dumpWaves = false,
     bool cleanupAfterSimulationEnds = true,
-    SystemVerilogSimulator systemVerilogSimulator =
-        SystemVerilogSimulator.icarus,
   }) async {
     if (enableLogging) {
       Logger.root.level = Level.ALL;
