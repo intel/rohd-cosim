@@ -69,6 +69,28 @@ class DoubleCosimModuleTop extends Module {
   }
 }
 
+class ExampleTopModuleWithInouts extends Module {
+  late final ExampleCosimModuleInOut ecm;
+
+  ExampleTopModuleWithInouts(LogicNet a, LogicNet b) {
+    a = addInOut('a', a);
+    b = addInOut('b', b);
+
+    ecm = ExampleCosimModuleInOut(a, b);
+  }
+}
+
+class ExampleCosimModuleInOut extends ExternalSystemVerilogModule with Cosim {
+  @override
+  List<String> get verilogSources => ['../../test/cosim_mod_inout.sv'];
+
+  ExampleCosimModuleInOut(LogicNet a, LogicNet b)
+      : super(definitionName: 'my_cosim_test_module_nets') {
+    addInOut('a', a);
+    addInOut('b', b);
+  }
+}
+
 Future<void> main() async {
   tearDown(() async {
     await Simulator.reset();
@@ -98,6 +120,38 @@ Future<void> main() async {
       });
       await Simulator.run();
     });
+
+    if (sim != SystemVerilogSimulator.verilator) {
+      // verilator does not support inout connections: https://github.com/verilator/verilator/issues/2844
+
+      test('simple push and check with inout', () async {
+        final a = LogicNet();
+        final b = LogicNet();
+        final mod = ExampleTopModuleWithInouts(a, b);
+        await mod.build();
+
+        await CosimTestingInfrastructure.connectCosim(
+            'simple_push_n_check_with_inout',
+            systemVerilogSimulator: sim);
+
+        Simulator.registerAction(2, () {
+          a.put(1);
+        });
+        Simulator.registerAction(3, () {
+          expect(b.value, equals(LogicValue.one));
+        });
+        Simulator.registerAction(4, () {
+          a.put(0);
+        });
+        Simulator.registerAction(5, () {
+          expect(b.value, equals(LogicValue.zero));
+        });
+
+        //TODO: test with other direction as well!
+
+        await Simulator.run();
+      });
+    }
 
     test('comb latency', () async {
       final a = Logic();
