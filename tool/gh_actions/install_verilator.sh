@@ -36,6 +36,7 @@ sudo apt-get install --yes perl-doc
 sudo apt-get install --yes git autoconf flex bison
 
 # Clone the Verilator repository.
+cd /tmp/
 git clone https://github.com/verilator/verilator
 cd verilator
 
