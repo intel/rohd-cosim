@@ -13,15 +13,10 @@ dependencies:
   collection: ^1.18.0
   logging: ^1.0.2
   meta: ^1.8.0
-  rohd: ^0.6.0 # TODO: needs ROHD PRs #558, #557
+  rohd: ^0.6.2
   synchronized: ^3.0.0
 
 dev_dependencies:
   args: ^2.3.1
   test: ^1.17.3
 
-dependency_overrides:
-  rohd:
-    git:
-      url: https://github.com/intel/rohd
-      ref: main
