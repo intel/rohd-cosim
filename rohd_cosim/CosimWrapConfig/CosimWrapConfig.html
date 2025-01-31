@@ -58,11 +58,11 @@
     <section class="multi-line-signature">
       
       <span class="name ">CosimWrapConfig</span>(<wbr><ol class="parameter-list"> <li><span class="parameter" id="-param-systemVerilogSimulator"><span class="type-annotation"><a href="../../rohd_cosim/SystemVerilogSimulator.html">SystemVerilogSimulator</a></span> <span class="parameter-name">systemVerilogSimulator</span>, {</span></li>
-<li><span class="parameter" id="-param-directory"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.0/dart-core/String-class.html">String</a></span> <span class="parameter-name">directory</span> = <span class="default-value">_defaultCosimDirectory</span>, </span></li>
-<li><span class="parameter" id="-param-enableLogging"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.0/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enableLogging</span> = <span class="default-value">false</span>, </span></li>
-<li><span class="parameter" id="-param-dumpWaves"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.0/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">dumpWaves</span> = <span class="default-value">false</span>, </span></li>
-<li><span class="parameter" id="-param-environment"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.0/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.6.0/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.dart.dev/stable/3.6.0/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">environment</span>, </span></li>
-<li><span class="parameter" id="-param-throwOnUnexpectedEnd"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.0/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">throwOnUnexpectedEnd</span> = <span class="default-value">true</span>, </span></li>
+<li><span class="parameter" id="-param-directory"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">directory</span> = <span class="default-value">_defaultCosimDirectory</span>, </span></li>
+<li><span class="parameter" id="-param-enableLogging"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">enableLogging</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="-param-dumpWaves"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">dumpWaves</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="-param-environment"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.2/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.6.2/dart-core/String-class.html">String</a></span>, <span class="type-parameter"><a href="https://api.dart.dev/stable/3.6.2/dart-core/String-class.html">String</a></span>&gt;</span>?</span> <span class="parameter-name">environment</span>, </span></li>
+<li><span class="parameter" id="-param-throwOnUnexpectedEnd"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.2/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">throwOnUnexpectedEnd</span> = <span class="default-value">true</span>, </span></li>
 </ol>})
     </section>
     
@@ -96,10 +96,10 @@ simulator, place them in <code>environment</code>.</p>
       dumpWavesString =
           _SystemVerilogSimulatorWaveDumpConfiguration.vcsFsdbDump(
               top: _wrapperName);
-    } else if (systemVerilogSimulator == SystemVerilogSimulator.icarus) {
-      dumpWavesString =
-          _SystemVerilogSimulatorWaveDumpConfiguration.icarusVcdDump(
-              top: _wrapperName);
+    } else if (systemVerilogSimulator == SystemVerilogSimulator.icarus ||
+        systemVerilogSimulator == SystemVerilogSimulator.verilator) {
+      dumpWavesString = _SystemVerilogSimulatorWaveDumpConfiguration.vcdDump(
+          top: _wrapperName);
     } else {
       throw Exception(&#39;Not sure how to dump waves for simulator&#39;
           &#39; &quot;${systemVerilogSimulator.name}&quot;.&#39;);
@@ -115,6 +115,7 @@ simulator, place them in <code>environment</code>.</p>
     directory: directory,
     simulator: systemVerilogSimulator,
     registrees: Cosim.registrees,
+    dumpWaves: dumpWaves,
   );
 }</code></pre>
 </section>
