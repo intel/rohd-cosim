@@ -192,7 +192,6 @@ mixin Cosim on ExternalSystemVerilogModule {
     _socket = connection.socket;
 
     // catch errors if the socket shuts down
-    // ignore: avoid_types_on_closure_parameters
     unawaited(_socket!.done.catchError((Object error) {
       logger?.info('Encountered error upon socket completion, '
           'shutting down cosim: $error');
@@ -208,7 +207,6 @@ mixin Cosim on ExternalSystemVerilogModule {
         endCosim();
       },
       cancelOnError: true,
-      // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stackTrace) {
         logger?.info(
             'Encountered error while listening to socket, ending cosim: $err');

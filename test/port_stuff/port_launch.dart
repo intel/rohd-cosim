@@ -65,7 +65,6 @@ Future<void> runCosim(int port,
   final mod = BottomMod(a);
   await mod.build();
 
-  // ignore: dead_code
   if (enableLogging) {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen(print);
