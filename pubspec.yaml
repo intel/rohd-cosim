@@ -13,7 +13,7 @@ dependencies:
   collection: ^1.18.0
   logging: ^1.0.2
   meta: ^1.8.0
-  rohd: ^0.6.0
+  rohd: ^0.6.2
   synchronized: ^3.0.0
 
 dev_dependencies:

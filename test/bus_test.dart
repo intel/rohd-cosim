@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // bus_test.dart
@@ -33,21 +33,24 @@ Future<void> main() async {
     await Cosim.reset();
   });
 
-  test('simple bus', () async {
-    final mod = CosimBusMod(Logic(width: 4));
-    await mod.build();
+  CosimTestingInfrastructure.testPerSimulator((sim) {
+    test('simple bus', () async {
+      final mod = CosimBusMod(Logic(width: 4));
+      await mod.build();
 
-    const dirName = 'simple_bus';
+      const dirName = 'simple_bus';
 
-    await CosimTestingInfrastructure.connectCosim(dirName);
+      await CosimTestingInfrastructure.connectCosim(dirName,
+          systemVerilogSimulator: sim);
 
-    final vectors = [
-      Vector({'a': 0}, {'b': 0}),
-      Vector({'a': LogicValue.ofString('01xz')},
-          {'b': LogicValue.ofString('01xz')}),
-    ];
-    await SimCompare.checkFunctionalVector(mod, vectors);
-
-    await CosimTestingInfrastructure.cleanupCosim(dirName);
+      final vectors = [
+        Vector({'a': 0}, {'b': 0}),
+        Vector({'a': 0x3}, {'b': 0x3}),
+        if (sim != SystemVerilogSimulator.verilator)
+          Vector({'a': LogicValue.ofString('01xz')},
+              {'b': LogicValue.ofString('01xz')}),
+      ];
+      await SimCompare.checkFunctionalVector(mod, vectors);
+    });
   });
 }

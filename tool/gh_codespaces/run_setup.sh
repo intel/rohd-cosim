@@ -20,6 +20,9 @@ tool/gh_actions/install_dart_dependencies.sh
 # Install Icarus Verilog.
 tool/gh_actions/install_iverilog.sh
 
+# Install Verilator
+tool/gh_actions/install_verilator.sh
+
 # Install Python.
 tool/gh_actions/install_python.sh
 

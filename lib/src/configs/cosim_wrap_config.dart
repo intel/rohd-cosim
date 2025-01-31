@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2024 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // cosim_wrap_config.dart
@@ -17,7 +17,14 @@ enum SystemVerilogSimulator {
   icarus,
 
   /// Synopsys VCS
-  vcs
+  vcs,
+
+  /// Verilator
+  ///
+  /// Known limitations to be aware of:
+  /// - Verilator does not support invalid (`x`, `z`) values in the simulation.
+  /// - Support for unpacked array ports is limited.
+  verilator,
 }
 
 abstract class _SystemVerilogSimulatorWaveDumpConfiguration {
@@ -31,8 +38,7 @@ abstract class _SystemVerilogSimulatorWaveDumpConfiguration {
   end
 ''';
 
-  static String icarusVcdDump(
-          {required String top, String vcdName = 'waves.vcd'}) =>
+  static String vcdDump({required String top, String vcdName = 'waves.vcd'}) =>
       '''
 initial
  begin
@@ -85,10 +91,10 @@ class CosimWrapConfig extends CosimProcessConfig {
         dumpWavesString =
             _SystemVerilogSimulatorWaveDumpConfiguration.vcsFsdbDump(
                 top: _wrapperName);
-      } else if (systemVerilogSimulator == SystemVerilogSimulator.icarus) {
-        dumpWavesString =
-            _SystemVerilogSimulatorWaveDumpConfiguration.icarusVcdDump(
-                top: _wrapperName);
+      } else if (systemVerilogSimulator == SystemVerilogSimulator.icarus ||
+          systemVerilogSimulator == SystemVerilogSimulator.verilator) {
+        dumpWavesString = _SystemVerilogSimulatorWaveDumpConfiguration.vcdDump(
+            top: _wrapperName);
       } else {
         throw Exception('Not sure how to dump waves for simulator'
             ' "${systemVerilogSimulator.name}".');
@@ -104,6 +110,7 @@ class CosimWrapConfig extends CosimProcessConfig {
       directory: directory,
       simulator: systemVerilogSimulator,
       registrees: Cosim.registrees,
+      dumpWaves: dumpWaves,
     );
   }
 
@@ -151,10 +158,12 @@ class CosimWrapConfig extends CosimProcessConfig {
 
   /// Generates a Makefile that can build and simulate the design
   /// for cosimulation.
-  static void _createMakefile(
-      {required SystemVerilogSimulator simulator,
-      required String directory,
-      required Map<String, Cosim> registrees}) {
+  static void _createMakefile({
+    required SystemVerilogSimulator simulator,
+    required String directory,
+    required Map<String, Cosim> registrees,
+    required bool dumpWaves,
+  }) {
     final verilogSources = Set.of(
         registrees.values.map((e) => e.verilogSources ?? []).expand((e) => e));
     final filelists = Set.of(
@@ -173,6 +182,8 @@ class CosimWrapConfig extends CosimProcessConfig {
       ...filelists.map((e) => 'COMPILE_ARGS += -f $e\n'),
       ...extraArgs.map((e) => 'EXTRA_ARGS += $e\n'),
       ...compileArgs.map((e) => 'COMPILE_ARGS += $e\n'),
+      if (dumpWaves && simulator == SystemVerilogSimulator.verilator)
+        'EXTRA_ARGS += --trace',
       'TOPLEVEL = $_wrapperName',
       'MODULE = ${Cosim.defaultPythonModuleName}',
       r'include $(shell cocotb-config --makefiles)/Makefile.sim'

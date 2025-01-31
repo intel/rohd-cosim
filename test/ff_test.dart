@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // ff_test.dart
@@ -34,26 +34,26 @@ Future<void> main() async {
     await Cosim.reset();
   });
 
-  test('simple ff', () async {
-    final d = Logic();
-    final clk = SimpleClockGenerator(10).clk;
-    final mod = CosimFFMod(clk, d);
-    await mod.build();
+  CosimTestingInfrastructure.testPerSimulator((sim) {
+    test('simple ff', () async {
+      final d = Logic();
+      final clk = SimpleClockGenerator(10).clk;
+      final mod = CosimFFMod(clk, d);
+      await mod.build();
 
-    const dirName = 'simple_ff';
+      const dirName = 'simple_ff';
 
-    await CosimTestingInfrastructure.connectCosim(dirName,
-        cleanupAfterSimulationEnds: false);
+      await CosimTestingInfrastructure.connectCosim(dirName,
+          systemVerilogSimulator: sim);
 
-    final vectors = [
-      Vector({'d': 0}, {}),
-      Vector({'d': 1}, {'q': 0}),
-      Vector({'d': 1}, {'q': 1}),
-      Vector({'d': 0}, {'q': 1}),
-      Vector({'d': 0}, {'q': 0}),
-    ];
-    await SimCompare.checkFunctionalVector(mod, vectors);
-
-    await CosimTestingInfrastructure.cleanupCosim(dirName);
+      final vectors = [
+        Vector({'d': 0}, {}),
+        Vector({'d': 1}, {'q': 0}),
+        Vector({'d': 1}, {'q': 1}),
+        Vector({'d': 0}, {'q': 1}),
+        Vector({'d': 0}, {'q': 0}),
+      ];
+      await SimCompare.checkFunctionalVector(mod, vectors);
+    });
   });
 }

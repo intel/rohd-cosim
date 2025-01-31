@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // cosim_test_infra.dart
@@ -15,8 +15,9 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';
+import 'package:test/test.dart';
 
-class CosimTestingInfrastructure {
+abstract class CosimTestingInfrastructure {
   static const _tmpCosimDir = 'tmp_cosim';
 
   /// Connects the cosimulation, optionally with [enableLogging] and
@@ -26,6 +27,7 @@ class CosimTestingInfrastructure {
   /// [cleanupAfterSimulationEnds] it will do it automatically for you.
   static Future<void> connectCosim(
     String testName, {
+    required SystemVerilogSimulator systemVerilogSimulator,
     bool enableLogging = false,
     bool dumpWaves = false,
     bool cleanupAfterSimulationEnds = true,
@@ -33,26 +35,46 @@ class CosimTestingInfrastructure {
     if (enableLogging) {
       Logger.root.level = Level.ALL;
       final loggerSubscription = Logger.root.onRecord.listen(print);
-      unawaited(
-          Simulator.simulationEnded.then((_) => loggerSubscription.cancel()));
+      Simulator.registerEndOfSimulationAction(loggerSubscription.cancel);
     }
 
     await Cosim.connectCosimulation(CosimWrapConfig(
-      SystemVerilogSimulator.icarus,
-      directory: '$_tmpCosimDir/$testName',
+      systemVerilogSimulator,
+      directory: tempDirName(testName, systemVerilogSimulator),
       enableLogging: enableLogging,
       dumpWaves: dumpWaves,
     ));
 
     if (cleanupAfterSimulationEnds) {
       // wait a second to do it so that the SV simulator can shut down
-      unawaited(Simulator.simulationEnded.then((_) => cleanupCosim(testName)));
+      Simulator.registerEndOfSimulationAction(() async {
+        await cleanupCosim(testName, systemVerilogSimulator);
+      });
     }
   }
 
+  /// Creates a test group for each supported simulator.
+  static void testPerSimulator(
+      void Function(SystemVerilogSimulator sim) buildTests) {
+    for (final sim in [
+      SystemVerilogSimulator.icarus,
+      SystemVerilogSimulator.verilator
+    ]) {
+      group(sim.name, () {
+        buildTests(sim);
+      });
+    }
+  }
+
+  /// Constructs the temporary directory path for a test.
+  static String tempDirName(
+          String testName, SystemVerilogSimulator simulator) =>
+      '$_tmpCosimDir/${simulator.name}_$testName';
+
   /// Deletes temporary files created by [connectCosim].
-  static Future<void> cleanupCosim(String testName) async {
-    await delayedDeleteDirectory('$_tmpCosimDir/$testName');
+  static Future<void> cleanupCosim(
+      String testName, SystemVerilogSimulator simulator) async {
+    await delayedDeleteDirectory(tempDirName(testName, simulator));
   }
 
   /// Deletes a directory at [directoryPath] (recursively) after

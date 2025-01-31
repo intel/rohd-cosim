@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2024 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // cosim.dart
@@ -75,28 +75,28 @@ class _CosimMessage {
 mixin Cosim on ExternalSystemVerilogModule {
   /// A list of verilog source files to include in the build.
   ///
-  /// The contents are put in a Makefile, so environment variables
-  /// should use parentheses, like `$(MYENVVAR)`.
+  /// The contents are put in a Makefile, so environment variables should use
+  /// parentheses, like `$(MYENVVAR)`.
   List<String>? get verilogSources => null;
 
   /// A list of filelists (.f files) to pass to the compile stage.
   ///
-  /// The contents are put in a Makefile, so environment variables
-  /// should use parentheses, like `$(MYENVVAR)`.
+  /// The contents are put in a Makefile, so environment variables should use
+  /// parentheses, like `$(MYENVVAR)`.
   List<String>? get filelists => null;
 
-  /// A list of additional arguments to pass to both compile phase
-  /// of the SystemVerilog simulator.
+  /// A list of additional arguments to pass to compile phase of the
+  /// SystemVerilog simulator.
   ///
-  /// The contents are put in a Makefile, so environment variables
-  /// should use parentheses, like `$(MYENVVAR)`.
+  /// The contents are put in a Makefile, so environment variables should use
+  /// parentheses, like `$(MYENVVAR)`.
   List<String>? get compileArgs => null;
 
   /// A list of additional arguments to pass to both compile and execute phase
   /// of the SystemVerilog simulation.
   ///
-  /// The contents are put in a Makefile, so environment variables
-  /// should use parentheses, like `$(MYENVVAR)`.
+  /// The contents are put in a Makefile, so environment variables should use
+  /// parentheses, like `$(MYENVVAR)`.
   List<String>? get extraArgs => null;
 
   /// The hierarchy from the SystemVerilog cosimulation top to reach this
