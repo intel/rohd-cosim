@@ -302,6 +302,25 @@ mixin Cosim on ExternalSystemVerilogModule {
   /// Keeps track of whether we need to do an update post-tick.
   bool _pendingPostUpdate = false;
 
+  //TODO DOC
+  final Map<Logic, Logic> _inoutToReceivedInOutDriverMap = {};
+  Logic _inoutReceivedDriver(String inoutName) {
+    final io = inOut(inoutName);
+    if (!_inoutToReceivedInOutDriverMap.containsKey(io)) {
+      final driverName = 'ioDriverOf_$inoutName';
+      final driver = io is LogicArray
+          ? LogicArray(
+              name: driverName,
+              io.dimensions,
+              io.elementWidth,
+              numUnpackedDimensions: io.numUnpackedDimensions)
+          : Logic(name: driverName, width: io.width);
+      _inoutToReceivedInOutDriverMap[io] = driver;
+      io <= driver;
+    }
+    return _inoutToReceivedInOutDriverMap[io]!;
+  }
+
   /// Sets up listeners on ports in both directions with cosimulation for
   /// all [_registrees].
   static Future<void> _setupPortHandshakes({
@@ -326,7 +345,7 @@ mixin Cosim on ExternalSystemVerilogModule {
       /// Gets a output or else an inout.
       Logic getPort(String name) =>
           _registrees[registreeName]!.tryOutput(name) ??
-          _registrees[registreeName]!.inOut(name);
+          _registrees[registreeName]!._inoutReceivedDriver(name);
 
       if (portName.endsWith(']')) {
         // handle case where there was an unpacked array (should end with ']')
