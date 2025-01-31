@@ -302,8 +302,11 @@ mixin Cosim on ExternalSystemVerilogModule {
   /// Keeps track of whether we need to do an update post-tick.
   bool _pendingPostUpdate = false;
 
-  //TODO DOC
+  /// A mapping from [inOut]s to a "received" driver of them, so that it can
+  /// calculate if contention has occurred.
   final Map<Logic, Logic> _inoutToReceivedInOutDriverMap = {};
+
+  /// Returns the driver of an [inOut] to be driven by "received" updates.
   Logic _inoutReceivedDriver(String inoutName) {
     final io = inOut(inoutName);
     if (!_inoutToReceivedInOutDriverMap.containsKey(io)) {
