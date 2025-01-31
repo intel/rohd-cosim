@@ -53,6 +53,7 @@ abstract class CosimTestingInfrastructure {
     }
   }
 
+  /// Creates a test group for each supported simulator.
   static void testPerSimulator(
       void Function(SystemVerilogSimulator sim) buildTests) {
     for (final sim in [
