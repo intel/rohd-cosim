@@ -31,6 +31,8 @@ pip install cocotb
 
 You will also need your favorite SystemVerilog simulator to do cosimulation between ROHD and SystemVerilog modules.  ROHD Cosim does *not* do any SystemVerilog parsing or SystemVerilog simulation itself.
 
+See the section on [support and limitations](#support--limitations) for more details on simulators, versions, limitations, etc.
+
 ## Using ROHD Cosim
 
 There are two steps to using ROHD Cosim:
@@ -152,6 +154,16 @@ Check out `test/port_test.dart` for a good example of how to make this work.
 The diagram below shows how the port configuration connects to your simulation.  Your custom build flow generates the simulation executable, and your custom run flow starts the simulation.  You must create some mechanism, such as through a custom cocotb test, to pass port information back to ROHD cosim.  In this diagram, the custom test is launching the actual ROHD process with a port argument on the command line.
 
 ![Port Config Diagram](https://github.com/intel/rohd-cosim/raw/main/doc/diagrams/port.png)
+
+## Support & Limitations
+
+ROHD Cosim depends on cross-compatibility with SystemVerilog simulators and the libraries from cocotb that enable VPI-based communication between them. Because of this, there are some limitations which may be version and simulator specific, as well as some fundamental limitations that have to do with the communication mechanisms.
+
+- The simulation must occur over time.  That is, it is not possible to have a "purely combinational" block of logic, change an input, and view an instantaneous output change, as you normally can with ROHD modules.  This is because coordination between the ROHD simulation and the SystemVerilog simulator is coordinated by `Simulator` phasing.  Therefore, changes on the output of a SystemVerilog cosimulated module will not update until some time has passed.
+- ROHD Cosim can support simulators supported by cocotb, but has only been tested with those officially listed in the [`SystemVerilogSimulator` enum](https://intel.github.io/rohd-cosim/rohd_cosim/SystemVerilogSimulator.html).
+- Cross-version compatibility between ROHD Cosim, cocotb, and SystemVerilog simulators can, unfortunatley, be delicate.  Check the [simulator support documentation from cocotb](https://docs.cocotb.org/en/stable/simulator_support.html) for more details about which versions of which simulators will work well with which versions of cocotb (and thus ROHD Cosim).
+- Different SystemVerilog simulators have different limitations and capabilities, and thus those features would be limited in cosimulation as well. For example, Verilator does not support X/Z values.
+- In/Out ports and bidirectional wires are supported in ROHD Cosim, as they are in ROHD, however contention may not be calculated at these port boundaries in a realistic way. This has to do with how ROHD Cosim sends and receives updates with the SystemVerilog simulator. If the SystemVerilog simulator resolves a value or contention on an inout port, it may not be possible for ROHD to determine whether the contention can/should break, for example.
 
 ----------------
 2022 September 9  

@@ -192,7 +192,6 @@ mixin Cosim on ExternalSystemVerilogModule {
     _socket = connection.socket;
 
     // catch errors if the socket shuts down
-    // ignore: avoid_types_on_closure_parameters
     unawaited(_socket!.done.catchError((Object error) {
       logger?.info('Encountered error upon socket completion, '
           'shutting down cosim: $error');
@@ -208,7 +207,6 @@ mixin Cosim on ExternalSystemVerilogModule {
         endCosim();
       },
       cancelOnError: true,
-      // ignore: avoid_types_on_closure_parameters
       onError: (Object err, StackTrace stackTrace) {
         logger?.info(
             'Encountered error while listening to socket, ending cosim: $err');
@@ -302,6 +300,28 @@ mixin Cosim on ExternalSystemVerilogModule {
   /// Keeps track of whether we need to do an update post-tick.
   bool _pendingPostUpdate = false;
 
+  /// A mapping from [inOut]s to a "received" driver of them, so that it can
+  /// calculate if contention has occurred.
+  final Map<Logic, Logic> _inoutToReceivedInOutDriverMap = {};
+
+  /// Returns the driver of an [inOut] to be driven by "received" updates.
+  Logic _inoutReceivedDriver(String inoutName) {
+    final io = inOut(inoutName);
+    if (!_inoutToReceivedInOutDriverMap.containsKey(io)) {
+      final driverName = 'ioDriverOf_$inoutName';
+      final driver = io is LogicArray
+          ? LogicArray(
+              name: driverName,
+              io.dimensions,
+              io.elementWidth,
+              numUnpackedDimensions: io.numUnpackedDimensions)
+          : Logic(name: driverName, width: io.width);
+      _inoutToReceivedInOutDriverMap[io] = driver;
+      io <= driver;
+    }
+    return _inoutToReceivedInOutDriverMap[io]!;
+  }
+
   /// Sets up listeners on ports in both directions with cosimulation for
   /// all [_registrees].
   static Future<void> _setupPortHandshakes({
@@ -323,19 +343,24 @@ mixin Cosim on ExternalSystemVerilogModule {
             ' drive this signal: "${event.signalName}"');
       }
 
-      // handle case where there was an unpacked array (should end with ']')
+      /// Gets a output or else an inout.
+      Logic getPort(String name) =>
+          _registrees[registreeName]!.tryOutput(name) ??
+          _registrees[registreeName]!._inoutReceivedDriver(name);
+
       if (portName.endsWith(']')) {
+        // handle case where there was an unpacked array (should end with ']')
         final splitPortName = portName.split(RegExp(r'[\[\]]'));
         final arrayName = splitPortName[0];
         final arrayIndex = int.parse(splitPortName[1]);
-        (_registrees[registreeName]!.output(arrayName) as LogicArray)
+        (getPort(arrayName) as LogicArray)
             .flattenedUnpacked
             .toList()[arrayIndex]
             // ignore: unnecessary_null_checks
             .put(event.signalValue!);
       } else {
         // ignore: unnecessary_null_checks
-        _registrees[registreeName]!.output(portName).put(event.signalValue!);
+        getPort(portName).put(event.signalValue!);
       }
     });
 
@@ -357,7 +382,10 @@ mixin Cosim on ExternalSystemVerilogModule {
 
     for (final registree in _registrees.values) {
       // listen to every input of this module
-      for (final modInput in registree.inputs.values) {
+      for (final modInput in [
+        ...registree.inputs.values,
+        ...registree.inOuts.values
+      ]) {
         if (modInput.width == 0) {
           // no need to listen to 0-bit signals, they won't be changing
           // (and won't exist in SV)
@@ -568,7 +596,10 @@ async def setup_connections(dut, connector : rohd_connector.RohdConnector):
         cocoTbHier += '.${registree.cosimHierarchy}';
       }
 
-      for (final outputEntry in registree.outputs.entries) {
+      for (final outputEntry in [
+        ...registree.outputs.entries,
+        ...registree.inOuts.entries
+      ]) {
         final outputName = outputEntry.key;
         final outputLogic = outputEntry.value;
         if (outputLogic.width == 0) {
@@ -592,7 +623,10 @@ async def setup_connections(dut, connector : rohd_connector.RohdConnector):
               '))\n');
         }
       }
-      for (final inputEntry in registree.inputs.entries) {
+      for (final inputEntry in [
+        ...registree.inputs.entries,
+        ...registree.inOuts.entries
+      ]) {
         final inputName = inputEntry.key;
         final inputLogic = inputEntry.value;
         if (inputLogic.width == 0) {

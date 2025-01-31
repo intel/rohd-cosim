@@ -24,6 +24,7 @@ enum SystemVerilogSimulator {
   /// Known limitations to be aware of:
   /// - Verilator does not support invalid (`x`, `z`) values in the simulation.
   /// - Support for unpacked array ports is limited.
+  /// - Support for inout connections is limited.
   verilator,
 }
 
@@ -145,6 +146,7 @@ class CosimWrapConfig extends CosimProcessConfig {
                 {
                   ...registreeEntry.value.inputs,
                   ...registreeEntry.value.outputs,
+                  ...registreeEntry.value.inOuts,
                 }.map((key, value) => MapEntry(key, '')),
               )),
       if (dumpWavesString != null) dumpWavesString,

@@ -34,14 +34,13 @@ class CosimPortConfig extends CosimConfig {
   Future<CosimConnection> connect() async {
     // ignore: close_sinks
     final socket = await Socket.connect(InternetAddress.loopbackIPv4, port)
-        // ignore: avoid_types_on_closure_parameters
         .catchError((Object error, StackTrace stackTrace) {
       print('Caught exception during socket connection: $error');
       print('> Stack trace:\n$stackTrace');
       // ignore: only_throw_errors
       throw error;
     });
-    // ignore: avoid_types_on_closure_parameters
+
     socket.handleError((Object error, StackTrace stackTrace) {
       print('Caught exception from socket via port configuration: $error');
       print('> Stack trace:\n$stackTrace');

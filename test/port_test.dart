@@ -80,7 +80,7 @@ void main() async {
     final stdoutBuffer = StringBuffer();
     unawaited(proc.stdout.transform(utf8.decoder).forEach((msg) {
       stdoutBuffer.write(msg);
-      // ignore: dead_code
+
       if (enableLogging) {
         print(msg);
       }

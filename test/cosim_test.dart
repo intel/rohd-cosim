@@ -69,6 +69,28 @@ class DoubleCosimModuleTop extends Module {
   }
 }
 
+class ExampleTopModuleWithInouts extends Module {
+  late final ExampleCosimModuleInOut ecm;
+
+  ExampleTopModuleWithInouts(LogicNet a, LogicNet b) {
+    a = addInOut('a', a);
+    b = addInOut('b', b);
+
+    ecm = ExampleCosimModuleInOut(a, b);
+  }
+}
+
+class ExampleCosimModuleInOut extends ExternalSystemVerilogModule with Cosim {
+  @override
+  List<String> get verilogSources => ['../../test/cosim_mod_inout.sv'];
+
+  ExampleCosimModuleInOut(LogicNet a, LogicNet b)
+      : super(definitionName: 'my_cosim_test_module_nets') {
+    addInOut('a', a);
+    addInOut('b', b);
+  }
+}
+
 Future<void> main() async {
   tearDown(() async {
     await Simulator.reset();
@@ -98,6 +120,92 @@ Future<void> main() async {
       });
       await Simulator.run();
     });
+
+    if (sim != SystemVerilogSimulator.verilator) {
+      // verilator does not support inout connections: https://github.com/verilator/verilator/issues/2844
+
+      group('inout', () {
+        test('simple push and check with inout', () async {
+          final a = LogicNet();
+          final b = LogicNet();
+          final mod = ExampleTopModuleWithInouts(a, b);
+          await mod.build();
+
+          await CosimTestingInfrastructure.connectCosim(
+              'simple_push_n_check_with_inout',
+              systemVerilogSimulator: sim);
+
+          // in the a -> b direction
+          Simulator.registerAction(2, () {
+            a.put(1);
+          });
+          Simulator.registerAction(3, () {
+            expect(b.value, equals(LogicValue.one));
+          });
+          Simulator.registerAction(4, () {
+            a.put(0);
+          });
+          Simulator.registerAction(5, () {
+            expect(b.value, equals(LogicValue.zero));
+          });
+
+          // break contention
+          Simulator.registerAction(6, () {
+            a.put(LogicValue.z);
+          });
+
+          // in the b -> a direction
+          Simulator.registerAction(7, () {
+            b.put(1);
+          });
+          Simulator.registerAction(9, () {
+            expect(a.value, equals(LogicValue.one));
+          });
+          Simulator.registerAction(10, () {
+            b.put(0);
+          });
+          Simulator.registerAction(11, () {
+            expect(a.value, equals(LogicValue.zero));
+          });
+
+          await Simulator.run();
+        });
+
+        test('simple push and check with inout contention', () async {
+          final a = Logic();
+          final b = Logic();
+          final mod = ExampleTopModuleWithInouts(
+              LogicNet()..gets(a), LogicNet()..gets(b));
+          await mod.build();
+
+          await CosimTestingInfrastructure.connectCosim(
+              'simple_push_n_check_with_inout_contention',
+              systemVerilogSimulator: sim);
+
+          // in the a -> b direction
+          Simulator.registerAction(2, () {
+            a.put(1);
+          });
+          Simulator.registerAction(3, () {
+            expect(mod.inOut('a').value, equals(LogicValue.one));
+            expect(mod.inOut('b').value, equals(LogicValue.one));
+          });
+
+          // contention
+          Simulator.registerAction(6, () {
+            b.put(0);
+          });
+          Simulator.registerAction(7, () {
+            expect(mod.inOut('a').value, equals(LogicValue.x));
+            expect(mod.inOut('b').value, equals(LogicValue.x));
+          });
+
+          // breaking contention doesn't work, so we're done...
+
+          await Simulator.run();
+        });
+      });
+    }
 
     test('comb latency', () async {
       final a = Logic();
