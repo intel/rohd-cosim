@@ -81,14 +81,13 @@
 Future&lt;CosimConnection&gt; connect() async {
   &#47;&#47; ignore: close_sinks
   final socket = await Socket.connect(InternetAddress.loopbackIPv4, port)
-      &#47;&#47; ignore: avoid_types_on_closure_parameters
       .catchError((Object error, StackTrace stackTrace) {
     print(&#39;Caught exception during socket connection: $error&#39;);
     print(&#39;&gt; Stack trace:\n$stackTrace&#39;);
     &#47;&#47; ignore: only_throw_errors
     throw error;
   });
-  &#47;&#47; ignore: avoid_types_on_closure_parameters
+
   socket.handleError((Object error, StackTrace stackTrace) {
     print(&#39;Caught exception from socket via port configuration: $error&#39;);
     print(&#39;&gt; Stack trace:\n$stackTrace&#39;);

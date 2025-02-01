@@ -80,7 +80,6 @@
   _socket = connection.socket;
 
   &#47;&#47; catch errors if the socket shuts down
-  &#47;&#47; ignore: avoid_types_on_closure_parameters
   unawaited(_socket!.done.catchError((Object error) {
     logger?.info(&#39;Encountered error upon socket completion, &#39;
         &#39;shutting down cosim: $error&#39;);
@@ -96,7 +95,6 @@
       endCosim();
     },
     cancelOnError: true,
-    &#47;&#47; ignore: avoid_types_on_closure_parameters
     onError: (Object err, StackTrace stackTrace) {
       logger?.info(
           &#39;Encountered error while listening to socket, ending cosim: $err&#39;);
