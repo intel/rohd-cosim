@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // cosim_config.dart
@@ -28,6 +28,20 @@ class CosimConnection {
   ///
   /// Will run [disconnect] when the cosimulation is over.
   CosimConnection(this.socket, {this.disconnect = _defaultDisconnect});
+
+  /// A regular expression for usage in [extractSocketPort].
+  static final _cosimSocketRegex = RegExp(r'ROHD COSIM SOCKET:(\d+)');
+
+  /// Extracts a socket number from a stdout [message] from the cosimulation
+  /// process.  Returns `null` if no socket number is found in [message].
+  static int? extractSocketPort(String message) {
+    final match = _cosimSocketRegex.firstMatch(message);
+    if (match != null) {
+      return int.parse(match.group(1)!);
+    }
+
+    return null;
+  }
 }
 
 /// Configuration information for cosimulation.

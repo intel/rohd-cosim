@@ -1,5 +1,5 @@
 """
-Copyright (C) 2022-2024 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 SPDX-License-Identifier: BSD-3-Clause
 
 rohd_connector.py
@@ -169,8 +169,11 @@ class RohdConnector:
 
             if (
                 self.last_message_received_time is not None
-                and (time.time() - self.last_message_received_time)
-                > self.dart_connect_timeout
+                and self.dart_connect_timeout is not None
+                and (
+                    (time.time() - self.last_message_received_time)
+                    > self.dart_connect_timeout
+                )
             ):
                 self._error(
                     "Timeout waiting for Dart messages!  Perhaps the Dart side has hung "
