@@ -9,6 +9,7 @@
 
 import 'dart:io';
 
+import 'package:rohd/rohd.dart';
 import 'package:rohd_cosim/rohd_cosim.dart';
 
 /// A selection of a type of SystemVerilog Simulator.
@@ -139,16 +140,29 @@ class CosimWrapConfig extends CosimProcessConfig {
       {String? dumpWavesString}) {
     final wrapperVerilog = [
       'module $_wrapperName();',
-      ...registrees.entries
-          .map((registreeEntry) => registreeEntry.value.instantiationVerilog(
-                'dont_care',
-                registreeEntry.key,
-                {
-                  ...registreeEntry.value.inputs,
-                  ...registreeEntry.value.outputs,
-                  ...registreeEntry.value.inOuts,
-                }.map((key, value) => MapEntry(key, '')),
-              )),
+      ...registrees.entries.map((registreeEntry) {
+        const instanceType = 'dont_care';
+        final instanceName = registreeEntry.key;
+        final module = registreeEntry.value;
+        final ports = {
+          ...registreeEntry.value.inputs,
+          ...registreeEntry.value.outputs,
+          ...registreeEntry.value.inOuts,
+        }.map((key, value) => MapEntry(key, ''));
+
+        return module.instantiationVerilog(
+              instanceType,
+              instanceName,
+              ports,
+            ) ??
+            SystemVerilogSynthesizer.instantiationVerilogFor(
+              module: module,
+              instanceType: instanceType,
+              instanceName: instanceName,
+              ports: ports,
+              forceStandardInstantiation: true,
+            );
+      }),
       if (dumpWavesString != null) dumpWavesString,
       'endmodule'
     ].join('\n');
