@@ -72,7 +72,7 @@ class _CosimMessage {
 /// When applied to a [ExternalSystemVerilogModule], will configure it so that
 /// it can be cosimulated in a SystemVerilog simulator along with the ROHD
 /// simulator.
-mixin Cosim on ExternalSystemVerilogModule {
+mixin Cosim on SystemVerilog {
   /// A list of verilog source files to include in the build.
   ///
   /// The contents are put in a Makefile, so environment variables should use
@@ -107,6 +107,13 @@ mixin Cosim on ExternalSystemVerilogModule {
   /// uniquified) name. Override this `get`ter to set the hierarchy of the
   /// module to something else.
   String get cosimHierarchy => registreeName;
+
+  /// If set, then this [Module] will be registered for cosimulation.
+  ///
+  /// This flag can be used to determine whether additional modelling logic or
+  /// design should be generated within the module or if it should be left to
+  /// cosimulation to handle behavior.
+  bool get cosimEnabled => true;
 
   /// Resets all context for cosimulation.
   ///
@@ -163,7 +170,9 @@ mixin Cosim on ExternalSystemVerilogModule {
 
   @override
   Future<void> build() async {
-    cosimRegister();
+    if (cosimEnabled) {
+      cosimRegister();
+    }
     await super.build();
   }
 
