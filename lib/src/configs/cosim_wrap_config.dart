@@ -141,9 +141,9 @@ class CosimWrapConfig extends CosimProcessConfig {
     final wrapperVerilog = [
       'module $_wrapperName();',
       ...registrees.entries.map((registreeEntry) {
-        const instanceType = 'dont_care';
         final instanceName = registreeEntry.key;
         final module = registreeEntry.value;
+        final instanceType = module.definitionName;
         final ports = {
           ...registreeEntry.value.inputs,
           ...registreeEntry.value.outputs,
