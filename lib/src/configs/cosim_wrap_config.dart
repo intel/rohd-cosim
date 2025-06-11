@@ -107,6 +107,8 @@ class CosimWrapConfig extends CosimProcessConfig {
       Cosim.registrees,
       dumpWavesString: dumpWavesString,
     );
+    _createRequirementsTxt(directory: directory);
+    _pythonVEnvProcess(directory: directory);
     _createMakefile(
       directory: directory,
       simulator: systemVerilogSimulator,
@@ -124,8 +126,58 @@ class CosimWrapConfig extends CosimProcessConfig {
           '-f',
           _cosimMakefileName,
         ],
-        environment: environment,
+        environment: {
+          if (environment != null) ...environment!,
+          'PATH':
+              '${Directory(directory).absolute.path}/$_cosimVEnvName/bin:${Platform.environment['PATH']}',
+          'PYTHON3':
+              '${Directory(directory).absolute.path}/$_cosimVEnvName/bin/python3',
+        },
+        // environment: environment,
       );
+
+  /// The name of the requirements.txt that gets generated.
+  static const _cosimRequirementsName = 'requirements.txt';
+
+  /// Generates a requirements.txt file that contains the Python requirements
+  /// for running Cosimulation (namely, cocotb).
+  static void _createRequirementsTxt({
+    required String directory,
+    String cocotbVersion = '1.9.2',
+  }) {
+    final contents = [
+      'cocotb==$cocotbVersion',
+    ].join('\n');
+    File('$directory/$_cosimRequirementsName').writeAsStringSync(contents);
+  }
+
+  // The name of the Python venv that gets generated.
+  static const _cosimVEnvName = 'cosim_venv';
+
+  /// Generates a Python virtual with all necessary dependencies installed for
+  /// Cosimulation.
+  static void _pythonVEnvProcess({required String directory}) {
+    final pythonVEnvPath = '$directory/$_cosimVEnvName';
+
+    // create a Python virtual environment
+    final createVEnv =
+        Process.runSync('python3', ['-m', 'venv', pythonVEnvPath]);
+    if (createVEnv.exitCode != 0) {
+      throw Exception(
+          'Failed to create Python virtual environment: ${createVEnv.stderr}');
+    }
+
+    // install cocotb in the virtual environment
+    final pipPath = '$pythonVEnvPath/bin/pip';
+    final installCocotb = Process.runSync(
+      pipPath,
+      ['install', '-r', '$directory/$_cosimRequirementsName'],
+      environment: {'PATH': '$pythonVEnvPath/bin'},
+    );
+    if (installCocotb.exitCode != 0) {
+      throw Exception('Failed to install cocotb: ${installCocotb.stderr}');
+    }
+  }
 
   /// The name to use for the SystemVerilog wrapper.
   static const _wrapperName = 'cosim_wrapper';
