@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
-  <meta name="description" content="API docs for the build method from the Cosim mixin, for the Dart programming language.">
-  <title>build method - Cosim mixin - rohd_cosim library - Dart API</title>
+  <meta name="description" content="API docs for the extractSocketPort method from the CosimConnection class, for the Dart programming language.">
+  <title>extractSocketPort method - CosimConnection class - rohd_cosim library - Dart API</title>
 
 
   
@@ -26,10 +26,10 @@
   <ol class="breadcrumbs gt-separated dark hidden-xs">
     <li><a href="../../index.html">rohd_cosim</a></li>
     <li><a href="../../rohd_cosim/rohd_cosim-library.html">rohd_cosim.dart</a></li>
-    <li><a href="../../rohd_cosim/Cosim-mixin.html">Cosim</a></li>
-    <li class="self-crumb">build method</li>
+    <li><a href="../../rohd_cosim/CosimConnection-class.html">CosimConnection</a></li>
+    <li class="self-crumb">extractSocketPort static method</li>
   </ol>
-  <div class="self-name">build</div>
+  <div class="self-name">extractSocketPort</div>
   <form class="search navbar-right" role="search">
     <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
   </form>
@@ -49,54 +49,38 @@
 <div
     id="dartdoc-main-content"
     class="main-content"
-    data-above-sidebar="rohd_cosim&#47;Cosim-mixin-sidebar.html"
+    data-above-sidebar="rohd_cosim&#47;CosimConnection-class-sidebar.html"
     data-below-sidebar="">
     <div>
-<h1><span class="kind-method">build</span> method 
+<h1><span class="kind-method">extractSocketPort</span> static method 
 </h1></div>
 
     <section class="multi-line-signature">
       
-  <div>
-    <ol class="annotation-list">
-        <li>@<a href="https://api.dart.dev/stable/3.6.2/dart-core/override-constant.html">override</a></li>
-    </ol>
-  </div>
-<span class="returntype"><a href="https://api.dart.dev/stable/3.6.2/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">void</span>&gt;</span></span>
-<span class="name ">build</span>(<wbr>)
+<span class="returntype"><a href="https://api.dart.dev/stable/3.6.2/dart-core/int-class.html">int</a>?</span>
+<span class="name ">extractSocketPort</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="extractSocketPort-param-message"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.6.2/dart-core/String-class.html">String</a></span> <span class="parameter-name">message</span></span></li>
+</ol>)
 
-      <div class="features"><span class="feature">override</span></div>
+      
 
     </section>
     
 <section class="desc markdown">
-  <p>Builds the <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module-class.html">Module</a> and all <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module/subModules.html">subModules</a> within it.</p>
-<p>It is recommended not to override <a href="../../rohd_cosim/Cosim/build.html">build</a> nor put logic in <a href="../../rohd_cosim/Cosim/build.html">build</a>
-unless you have good reason to do so.  Aim to build up relevant logic in
-the constructor.</p>
-<p>All logic within this <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module-class.html">Module</a> <em>must</em> be defined <em>before</em> the call to
-<code>super.build()</code>.  When overriding this method, you should call
-<code>super.build()</code> as the last thing that you do, and you must always call
-it.</p>
-<p>This method traverses connectivity inwards from this <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module-class.html">Module</a>'s <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module/inputs.html">inputs</a>
-and <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module/outputs.html">outputs</a> to determine which <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module-class.html">Module</a>s are contained within it.
-During this process, it will set a variety of additional information
-within the hierarchy.</p>
-<p>This function can be used to consume real wallclock time for things like
-starting up interactions with independent processes (e.g. cosimulation).</p>
-<p>This function should only be called one time per <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module-class.html">Module</a>.</p>
-<p>The hierarchy is built "bottom-up", so leaf-level <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module-class.html">Module</a>s are built
-before the <a href="https://pub.dev/documentation/rohd/0.6.3/rohd/Module-class.html">Module</a>s which contain them.</p>
+  <p>Extracts a socket number from a stdout <code>message</code> from the cosimulation
+process.  Returns <code>null</code> if no socket number is found in <code>message</code>.</p>
 </section>
 
 
     
 <section class="summary source-code" id="source">
   <h2><span>Implementation</span></h2>
-  <pre class="language-dart"><code class="language-dart">@override
-Future&lt;void&gt; build() async {
-  cosimRegister();
-  await super.build();
+  <pre class="language-dart"><code class="language-dart">static int? extractSocketPort(String message) {
+  final match = _cosimSocketRegex.firstMatch(message);
+  if (match != null) {
+    return int.parse(match.group(1)!);
+  }
+
+  return null;
 }</code></pre>
 </section>
 
@@ -112,11 +96,11 @@ Future&lt;void&gt; build() async {
 <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
     <li><a href="../../index.html">rohd_cosim</a></li>
     <li><a href="../../rohd_cosim/rohd_cosim-library.html">rohd_cosim</a></li>
-    <li><a href="../../rohd_cosim/Cosim-mixin.html">Cosim</a></li>
-    <li class="self-crumb">build method</li>
+    <li><a href="../../rohd_cosim/CosimConnection-class.html">CosimConnection</a></li>
+    <li class="self-crumb">extractSocketPort static method</li>
 </ol>
 
-    <h5>Cosim mixin</h5>
+    <h5>CosimConnection class</h5>
     <div id="dartdoc-sidebar-left-content"></div>
   </div><!--/.sidebar-offcanvas-->
   <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
