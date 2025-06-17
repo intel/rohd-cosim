@@ -366,12 +366,12 @@ mixin Cosim on ExternalSystemVerilogModule {
 
     _receivedStream
         .where((event) => event.cosimMessageType == _CosimMessageType.end)
-        .listen((event) {
+        .listen((event) async {
       logger?.info('Received an indication that the simulator has finished.');
       if (onEnd != null) {
         onEnd();
       }
-      Simulator.endSimulation();
+      unawaited(Simulator.endSimulation());
     });
 
     // set up initial values
@@ -392,7 +392,7 @@ mixin Cosim on ExternalSystemVerilogModule {
           continue;
         }
 
-        modInput.glitch.listen((event) {
+        modInput.glitch.listen((event) async {
           // TODO(mkorbel1): test for clock divider bug, https://github.com/intel/rohd-cosim/issues/6
 
           if (Simulator.phase != SimulatorPhase.clkStable) {
@@ -404,7 +404,7 @@ mixin Cosim on ExternalSystemVerilogModule {
             // driving it, so hold onto it for later
             registree._inputsPendingPostUpdate.add(modInput);
             if (!registree._pendingPostUpdate) {
-              Simulator.postTick.first.then((value) {
+              unawaited(Simulator.postTick.first.then((value) {
                 // once the tick has completed, we can update the override maps
                 for (final driverInput in registree._inputsPendingPostUpdate) {
                   registree._inputToPreTickInputValuesMap[driverInput] =
@@ -419,7 +419,7 @@ mixin Cosim on ExternalSystemVerilogModule {
                   await _sendPendingUpdates(
                       throwOnUnexpectedEnd: throwOnUnexpectedEnd);
                 });
-              });
+              }));
             }
             registree._pendingPostUpdate = true;
           }
