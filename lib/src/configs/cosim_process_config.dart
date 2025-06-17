@@ -84,8 +84,8 @@ abstract class CosimProcessConfig extends CosimConfig {
       outFileSink?.write(message);
     }
 
-    unawaited(procFuture.then((proc) {
-      proc.stdout.transform(utf8.decoder).forEach((msg) async {
+    unawaited(procFuture.then((proc) async {
+      unawaited(proc.stdout.transform(utf8.decoder).forEach((msg) async {
         Cosim.logger?.finest('SIM STDOUT:\n$msg');
         cosimLog(msg);
 
@@ -98,14 +98,14 @@ abstract class CosimProcessConfig extends CosimConfig {
             socketConnectionCompleter.complete();
           }
         }
-      });
+      }));
 
-      proc.stderr.transform(utf8.decoder).forEach((msg) {
+      unawaited(proc.stderr.transform(utf8.decoder).forEach((msg) {
         Cosim.logger?.warning('SIM STDERR:\n$msg');
         cosimLog(msg);
-      });
+      }));
 
-      proc.exitCode.then((value) {
+      unawaited(proc.exitCode.then((value) {
         Cosim.logger?.fine('SIM EXIT CODE: $value');
 
         if (value != 0) {
@@ -122,7 +122,7 @@ abstract class CosimProcessConfig extends CosimConfig {
           }
           Cosim.endCosim();
         }
-      });
+      }));
     }));
 
     Cosim.logger?.finer('Waiting for socket to connect...');
