@@ -33,6 +33,8 @@ jobs:
 
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.6.2 # downgrade pending https://github.com/dart-lang/dartdoc/issues/3996
 
       - name: Install Dart dependencies
         run: tool/gh_actions/install_dart_dependencies.sh
@@ -90,6 +92,8 @@ jobs:
 
       - name: Setup Dart
         uses: dart-lang/setup-dart@v1
+        with:
+          sdk: 3.6.2 # downgrade pending https://github.com/dart-lang/dartdoc/issues/3996
 
       - name: Install dart dependencies
         run: tool/gh_actions/install_dart_dependencies.sh

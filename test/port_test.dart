@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // port_test.dart
@@ -6,8 +6,6 @@
 //
 // 2022 October 27
 // Author: Max Korbel <max.korbel@intel.com>
-
-// ignore_for_file: avoid_print
 
 import 'dart:async';
 import 'dart:convert';
@@ -37,20 +35,24 @@ void main() async {
   /// Returns stdout of process.
   Future<String> runPortTest({
     required String outDirName,
-    bool fail = false,
+    bool dartFail = false,
     bool finish = false,
     bool enableLogging = false,
     bool failAsync = false,
     bool hang = false,
+    bool separateDartLaunch = false,
+    bool pythonFail = false,
   }) async {
     await cleanup(outDirName);
 
     final runEnv = {
       'OUT_DIR': outDirName,
-      if (fail) 'DART_FAIL': '1',
+      if (dartFail) 'DART_FAIL': '1',
       if (finish) 'EXTRA_ARGS': '-DDO_FINISH',
       if (failAsync) 'DART_FAIL_ASYNC': '1',
       if (hang) 'DART_HANG': '1',
+      if (separateDartLaunch) 'SEPARATE_DART_LAUNCH': '1',
+      if (pythonFail) 'PYTHON_FAIL': '1',
     };
 
     // first build
@@ -78,11 +80,23 @@ void main() async {
     );
 
     final stdoutBuffer = StringBuffer();
-    unawaited(proc.stdout.transform(utf8.decoder).forEach((msg) {
+    unawaited(proc.stdout.transform(utf8.decoder).forEach((msg) async {
       stdoutBuffer.write(msg);
 
       if (enableLogging) {
+        // ignore: avoid_print
         print(msg);
+      }
+
+      if (separateDartLaunch) {
+        final socketNumber = CosimConnection.extractSocketPort(msg);
+        if (socketNumber != null) {
+          unawaited(runCosim(socketNumber,
+              dartFail: dartFail,
+              failAsync: failAsync,
+              hang: hang,
+              doPrint: enableLogging));
+        }
       }
     }));
 
@@ -90,7 +104,12 @@ void main() async {
 
     expect(exitCode, equals(0));
 
-    return stdoutBuffer.toString();
+    final stdoutContents = stdoutBuffer.toString();
+
+    expect(stdoutContents,
+        isNot(contains('ERROR: Exception encountered during cosim')));
+
+    return stdoutContents;
   }
 
   test('port test normal', () async {
@@ -107,7 +126,7 @@ void main() async {
     const outDirName = 'tmp_dart_fail';
 
     final stdoutContents =
-        await runPortTest(outDirName: outDirName, fail: true);
+        await runPortTest(outDirName: outDirName, dartFail: true);
 
     // if vvp is still sticking around, this test will time out
 
@@ -164,6 +183,30 @@ void main() async {
 
     // make sure error is communicated
     expect(stdoutContents, contains('ERROR:'));
+
+    await cleanup(outDirName);
+  });
+
+  test('port test with separate dart launch', () async {
+    const outDirName = 'tmp_dart_separate_launch';
+
+    await runPortTest(
+      outDirName: outDirName,
+      separateDartLaunch: true,
+    );
+
+    await cleanup(outDirName);
+  });
+
+  test('python exception causes test failure', () async {
+    const outDirName = 'tmp_python_fail';
+
+    final stdoutContents = await runPortTest(
+      outDirName: outDirName,
+      pythonFail: true,
+    );
+
+    expect(stdoutContents, contains('FAIL=1'));
 
     await cleanup(outDirName);
   });
