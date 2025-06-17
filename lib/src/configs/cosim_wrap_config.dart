@@ -66,6 +66,18 @@ class CosimWrapConfig extends CosimProcessConfig {
   /// the SystemVerilog simulator.
   final Map<String, String>? environment;
 
+  /// Should Cosim create a Python virtual environment to run cocotb in.
+  ///
+  /// With this option, users do not need to have cocotb installed and can still
+  /// control the version of cocotb via [cocotbVersion].
+  final bool usePythonVirtualEnvironment;
+
+  /// The version of cocotb to install in the Python virtual environment.
+  ///
+  /// Only applicable if using the Python virtual environment
+  /// ([usePythonVirtualEnvironment]).
+  final String cocotbVersion;
+
   /// Generates a SystemVerilog wrapper and a Makefile to be called by default.
   ///
   /// Generated files will be dumped into [directory].  Note that if your
@@ -82,6 +94,8 @@ class CosimWrapConfig extends CosimProcessConfig {
     super.enableLogging,
     this.dumpWaves = false,
     this.environment,
+    this.usePythonVirtualEnvironment = true,
+    this.cocotbVersion = '1.9.2',
     super.throwOnUnexpectedEnd,
   }) {
     Cosim.generateConnector(directory: directory, enableLogging: enableLogging);
@@ -107,8 +121,11 @@ class CosimWrapConfig extends CosimProcessConfig {
       Cosim.registrees,
       dumpWavesString: dumpWavesString,
     );
-    _createRequirementsTxt(directory: directory);
-    _pythonVEnvProcess(directory: directory);
+    if (usePythonVirtualEnvironment) {
+      _createRequirementsTxt(
+          directory: directory, cocotbVersion: cocotbVersion);
+      _pythonVEnvProcess(directory: directory);
+    }
     _createMakefile(
       directory: directory,
       simulator: systemVerilogSimulator,
@@ -143,7 +160,7 @@ class CosimWrapConfig extends CosimProcessConfig {
   /// for running Cosimulation (namely, cocotb).
   static void _createRequirementsTxt({
     required String directory,
-    String cocotbVersion = '1.9.2',
+    required String cocotbVersion,
   }) {
     final contents = [
       'cocotb==$cocotbVersion',
@@ -172,7 +189,9 @@ class CosimWrapConfig extends CosimProcessConfig {
     final installCocotb = Process.runSync(
       pipPath,
       ['install', '-r', '$directory/$_cosimRequirementsName'],
-      environment: {'PATH': '$pythonVEnvPath/bin'},
+      environment: {
+        'PATH': '$pythonVEnvPath/bin:${Platform.environment['PATH']}'
+      },
     );
     if (installCocotb.exitCode != 0) {
       throw Exception('Failed to install cocotb: ${installCocotb.stderr}');
