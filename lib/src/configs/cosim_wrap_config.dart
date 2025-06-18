@@ -145,10 +145,12 @@ class CosimWrapConfig extends CosimProcessConfig {
         ],
         environment: {
           if (environment != null) ...environment!,
-          'PATH':
-              '${Directory(directory).absolute.path}/$_cosimVEnvName/bin:${Platform.environment['PATH']}',
-          'PYTHON3':
-              '${Directory(directory).absolute.path}/$_cosimVEnvName/bin/python3',
+          if (usePythonVirtualEnvironment)
+            'PATH':
+                '${Directory(directory).absolute.path}/$_cosimVEnvName/bin:${Platform.environment['PATH']}',
+          if (usePythonVirtualEnvironment)
+            'PYTHON3':
+                '${Directory(directory).absolute.path}/$_cosimVEnvName/bin/python3',
         },
         // environment: environment,
       );
