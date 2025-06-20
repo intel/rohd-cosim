@@ -25,12 +25,16 @@ abstract class CosimTestingInfrastructure {
   ///
   /// Make sure to call [cleanupCosim] afterwards.  If you set
   /// [cleanupAfterSimulationEnds] it will do it automatically for you.
+  /// [usePythonVirtualEnvironment] and [cocotbVersion] control how the Cosim
+  /// interacts with the host environment.
   static Future<void> connectCosim(
     String testName, {
     required SystemVerilogSimulator systemVerilogSimulator,
     bool enableLogging = false,
     bool dumpWaves = false,
     bool cleanupAfterSimulationEnds = true,
+    bool usePythonVirtualEnvironment = true,
+    String cocotbVersion = '1.9.2',
   }) async {
     if (enableLogging) {
       Logger.root.level = Level.ALL;
@@ -43,6 +47,8 @@ abstract class CosimTestingInfrastructure {
       directory: tempDirName(testName, systemVerilogSimulator),
       enableLogging: enableLogging,
       dumpWaves: dumpWaves,
+      usePythonVirtualEnvironment: usePythonVirtualEnvironment,
+      cocotbVersion: cocotbVersion,
     ));
 
     if (cleanupAfterSimulationEnds) {
