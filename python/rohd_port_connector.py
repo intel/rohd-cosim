@@ -159,8 +159,10 @@ async def launch_on_port(
             await cosim_test_module.setup_connections(dut, connector)
 
     except Exception as exception:
-        traceback.print_exc()
-        fail_msg = f"ERROR: Exception encountered during cosim: {exception}"
+        full_traceback = traceback.format_exc()
+        fail_msg = (
+            f"ERROR: Exception encountered during cosim: {exception}\n{full_traceback}"
+        )
         print(fail_msg, flush=True)
         connector.shutdown()
         print("ERROR: Test failed due to exception.")

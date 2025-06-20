@@ -1,5 +1,5 @@
 """
-Copyright (C) 2022 Intel Corporation
+Copyright (C) 2022-2025 Intel Corporation
 SPDX-License-Identifier: BSD-3-Clause
 
 custom_test.py
@@ -27,6 +27,8 @@ import cosim_test_module
 dart_fail = os.getenv('DART_FAIL')
 dart_fail_async = os.getenv('DART_FAIL_ASYNC')
 dart_hang = os.getenv('DART_HANG')
+separate_dart_launch = os.getenv('SEPARATE_DART_LAUNCH')
+python_fail = os.getenv('PYTHON_FAIL')
 
 @cocotb.test()
 async def custom_test(dut):
@@ -52,9 +54,11 @@ async def custom_test(dut):
     await rohd_port_connector.launch_on_port(
         cosim_test_module=cosim_test_module,
         dut=dut,
-        # dart_command= None,
-        dart_command = dart_command,
+        dart_command = dart_command if not separate_dart_launch else None,
         log_name='custom_test',
         enable_logging=False,
-        dart_connect_timeout=5,
+        dart_connect_timeout = 5 if not separate_dart_launch else None,
     )
+
+    if python_fail:
+        raise Exception("Python test failure injected")

@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2025 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // cosim_process_config.dart
@@ -84,31 +84,28 @@ abstract class CosimProcessConfig extends CosimConfig {
       outFileSink?.write(message);
     }
 
-    unawaited(procFuture.then((proc) {
-      final cosimSocketRegex = RegExp(r'ROHD COSIM SOCKET:(\d+)');
-
-      proc.stdout.transform(utf8.decoder).forEach((msg) async {
+    unawaited(procFuture.then((proc) async {
+      unawaited(proc.stdout.transform(utf8.decoder).forEach((msg) async {
         Cosim.logger?.finest('SIM STDOUT:\n$msg');
         cosimLog(msg);
 
         if (!socketConnectionCompleter.isCompleted) {
-          // look for a string indicating the socket to connect to
-          final match = cosimSocketRegex.firstMatch(msg);
-          if (match != null) {
-            final socketNumber = int.parse(match.group(1)!);
+          final socketNumber = CosimConnection.extractSocketPort(msg);
+
+          if (socketNumber != null) {
             socket = await Socket.connect(
                 InternetAddress.loopbackIPv4, socketNumber);
             socketConnectionCompleter.complete();
           }
         }
-      });
+      }));
 
-      proc.stderr.transform(utf8.decoder).forEach((msg) {
+      unawaited(proc.stderr.transform(utf8.decoder).forEach((msg) {
         Cosim.logger?.warning('SIM STDERR:\n$msg');
         cosimLog(msg);
-      });
+      }));
 
-      proc.exitCode.then((value) {
+      unawaited(proc.exitCode.then((value) {
         Cosim.logger?.fine('SIM EXIT CODE: $value');
 
         if (value != 0) {
@@ -125,7 +122,7 @@ abstract class CosimProcessConfig extends CosimConfig {
           }
           Cosim.endCosim();
         }
-      });
+      }));
     }));
 
     Cosim.logger?.finer('Waiting for socket to connect...');
