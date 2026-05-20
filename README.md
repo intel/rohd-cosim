@@ -169,5 +169,5 @@ ROHD Cosim depends on cross-compatibility with SystemVerilog simulators and the 
 2022 September 9  
 Author: Max Korbel <<max.korbel@intel.com>>
 
-Copyright (C) 2022-2025 Intel Corporation  
+Copyright (C) 2022-2026 Intel Corporation  
 SPDX-License-Identifier: BSD-3-Clause
