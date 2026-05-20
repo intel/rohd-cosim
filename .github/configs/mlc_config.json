@@ -5,6 +5,12 @@
     },
     {
       "pattern":"^https://stackoverflow.com"
+    },
+    {
+      "pattern":"^https://github.com"
+    },
+    {
+      "pattern":"^https://.*\\.fandom\\.com"
     }
   ]
 }

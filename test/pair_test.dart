@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2023 Intel Corporation
+// Copyright (C) 2022-2026 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // pair_test.dart
@@ -18,7 +18,7 @@ import 'cosim_test_infra.dart';
 
 enum PairDirection { leftToRight, rightToLeft, misc }
 
-class PairInterface extends Interface<PairDirection> {
+class PairIntf extends Interface<PairDirection> {
   Logic get lrValid => port('lrValid');
   Logic get lrData => port('lrData');
 
@@ -27,30 +27,32 @@ class PairInterface extends Interface<PairDirection> {
 
   Logic get clk => port('clk');
 
-  PairInterface() {
+  PairIntf() {
     setPorts([
-      Port('lrValid'),
-      Port('lrData', 64),
+      Logic.port('lrValid'),
+      Logic.port('lrData', 64),
     ], [
       PairDirection.leftToRight
     ]);
     setPorts([
-      Port('rlValid'),
-      Port('rlData', 512),
+      Logic.port('rlValid'),
+      Logic.port('rlData', 512),
     ], [
       PairDirection.rightToLeft
     ]);
-    setPorts([Port('clk')], [PairDirection.misc]);
+    setPorts([Logic.port('clk')], [PairDirection.misc]);
   }
+
+  @override
+  Interface<PairDirection> clone() => PairIntf();
 }
 
 class LeftSide extends ExternalSystemVerilogModule with Cosim {
   @override
   final String cosimHierarchy = 'left';
 
-  LeftSide(PairInterface intf)
-      : super(definitionName: 'left_side', name: 'left') {
-    PairInterface().connectIO(this, intf,
+  LeftSide(PairIntf intf) : super(definitionName: 'left_side', name: 'left') {
+    PairIntf().connectIO(this, intf,
         inputTags: {PairDirection.leftToRight},
         outputTags: {PairDirection.rightToLeft});
   }
@@ -60,9 +62,9 @@ class RightSide extends ExternalSystemVerilogModule with Cosim {
   @override
   final String cosimHierarchy = 'right';
 
-  RightSide(PairInterface intf)
+  RightSide(PairIntf intf)
       : super(definitionName: 'right_side', name: 'right') {
-    PairInterface().connectIO(this, intf,
+    PairIntf().connectIO(this, intf,
         inputTags: {PairDirection.rightToLeft},
         outputTags: {PairDirection.leftToRight});
   }
@@ -96,10 +98,10 @@ void main() async {
             [buildResult.stdout, buildResult.stderr].join('\n ======== \n'));
 
     // then run cosim
-    final rightIntf = PairInterface();
+    final rightIntf = PairIntf();
     final rightSide = RightSide(rightIntf);
 
-    final leftIntf = PairInterface();
+    final leftIntf = PairIntf();
     final leftSide = LeftSide(leftIntf);
 
     final clk = SimpleClockGenerator(10).clk;
