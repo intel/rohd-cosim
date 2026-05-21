@@ -52,5 +52,24 @@ Future<void> main() async {
       ];
       await SimCompare.checkFunctionalVector(mod, vectors);
     });
+
+    test('simple bus - no Python venv', () async {
+      final mod = CosimBusMod(Logic(width: 4));
+      await mod.build();
+
+      const dirName = 'simple_bus';
+
+      await CosimTestingInfrastructure.connectCosim(dirName,
+          systemVerilogSimulator: sim, usePythonVirtualEnvironment: false);
+
+      final vectors = [
+        Vector({'a': 0}, {'b': 0}),
+        Vector({'a': 0x3}, {'b': 0x3}),
+        if (sim != SystemVerilogSimulator.verilator)
+          Vector({'a': LogicValue.ofString('01xz')},
+              {'b': LogicValue.ofString('01xz')}),
+      ];
+      await SimCompare.checkFunctionalVector(mod, vectors);
+    });
   });
 }
