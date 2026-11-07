@@ -1,5 +1,5 @@
 """
-Copyright (C) 2022-2025 Intel Corporation
+Copyright (C) 2022-2026 Intel Corporation
 SPDX-License-Identifier: BSD-3-Clause
 
 custom_test.py
@@ -57,7 +57,8 @@ async def custom_test(dut):
         dart_command = dart_command if not separate_dart_launch else None,
         log_name='custom_test',
         enable_logging=False,
-        dart_connect_timeout = 5 if not separate_dart_launch else None,
+        dart_connect_timeout = 30 if not separate_dart_launch else None,
+        dart_message_timeout = 5 if not separate_dart_launch else None,
     )
 
     if python_fail:

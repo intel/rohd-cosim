@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2025 Intel Corporation
+// Copyright (C) 2022-2026 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // port_test.dart
@@ -42,6 +42,7 @@ void main() async {
     bool hang = false,
     bool separateDartLaunch = false,
     bool pythonFail = false,
+    bool delayConnect = false,
   }) async {
     await cleanup(outDirName);
 
@@ -53,6 +54,7 @@ void main() async {
       if (hang) 'DART_HANG': '1',
       if (separateDartLaunch) 'SEPARATE_DART_LAUNCH': '1',
       if (pythonFail) 'PYTHON_FAIL': '1',
+      if (delayConnect) 'DART_DELAY_CONNECT': '1',
     };
 
     // first build
@@ -122,6 +124,17 @@ void main() async {
     await cleanup(outDirName);
   });
 
+  test('port test delayed connection', () async {
+    const outDirName = 'tmp_delayed_connect';
+
+    final stdoutContents =
+        await runPortTest(outDirName: outDirName, delayConnect: true);
+
+    expect(stdoutContents, contains('PASS=1'));
+
+    await cleanup(outDirName);
+  });
+
   test('port test dart fail', () async {
     const outDirName = 'tmp_dart_fail';
 
@@ -182,7 +195,8 @@ void main() async {
     // if vvp is still sticking around, this test will time out
 
     // make sure error is communicated
-    expect(stdoutContents, contains('ERROR:'));
+    expect(
+        stdoutContents, contains('ERROR: Timeout waiting for Dart messages!'));
 
     await cleanup(outDirName);
   });

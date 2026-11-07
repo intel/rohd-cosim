@@ -1,5 +1,5 @@
 """
-Copyright (C) 2023-2025 Intel Corporation
+Copyright (C) 2023-2026 Intel Corporation
 SPDX-License-Identifier: BSD-3-Clause
 
 rohd_port_connector.py
@@ -52,14 +52,17 @@ async def launch_on_port(
     clk_ratio=1000,
     clk_units="ps",
     dart_connect_timeout=None,
+    dart_message_timeout=None,
 ):
     """
     `dart_command` should be a reference to a function which accepts a port as an argument.
     If `dart_command` is None, then no dart thread will be launched.  This is useful
     if you want to launch your own dart process with the debugger attached.
 
-    Use `dart_connect_timeout` to as the number of seconds to wait before assuming the dart
-    process is never going to connect.  It will default to `None` if no `dart_command` is provided.
+    `dart_connect_timeout` is the number of seconds to wait for the Dart process
+    to connect. It defaults to 120 when launching Dart and to `None` otherwise.
+    `dart_message_timeout` controls the wait for messages after connection; it
+    defaults to `dart_connect_timeout`.
     """
 
     do_dart_launch = dart_command is not None
@@ -75,6 +78,7 @@ async def launch_on_port(
         clk_ratio=clk_ratio,
         clk_units=clk_units,
         dart_connect_timeout=dart_connect_timeout,
+        dart_message_timeout=dart_message_timeout,
     )
 
     def run_dart_thread() -> subprocess.Popen:
