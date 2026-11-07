@@ -1,5 +1,6 @@
 # Files and directories created by pub
 .dart_tool/
+pubspec_overrides.yaml
 .packages
 pubspec.lock
 
@@ -10,6 +11,7 @@ build/
 doc/api/
 
 # Other stuff
+.venv/
 tmp*
 *.vcd
 .vscode/*

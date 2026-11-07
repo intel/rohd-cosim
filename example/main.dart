@@ -1,4 +1,4 @@
-// Copyright (C) 2023 Intel Corporation
+// Copyright (C) 2023-2026 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // main.dart
@@ -91,7 +91,7 @@ Future<void> main({bool noPrint = false}) async {
   // Note that this is a separate VCD file from what the SystemVerilog simulator
   // will dump out.
   if (!noPrint) {
-    WaveDumper(counter, outputPath: './example/tmp_cosim/rohd_waves.vcd');
+    counter.dumpWaves(outputPath: './example/tmp_cosim/rohd_waves.vcd');
   }
 
   // Drop reset at time 25.

@@ -149,6 +149,10 @@ A port configuration is an even more specialized config in case you have not onl
 
 To build this system may require some custom python code to manually pass the port information where it needs to go.  The file `python/rohd_port_connector.py` can help with a lot of this.
 
+Its `launch_on_port` helper accepts separate `dart_connect_timeout` and
+`dart_message_timeout` values, in seconds, for startup and post-connection
+inactivity. If the message timeout is omitted, it uses the connection timeout.
+
 Check out `test/port_test.dart` for a good example of how to make this work.
 
 The diagram below shows how the port configuration connects to your simulation.  Your custom build flow generates the simulation executable, and your custom run flow starts the simulation.  You must create some mechanism, such as through a custom cocotb test, to pass port information back to ROHD cosim.  In this diagram, the custom test is launching the actual ROHD process with a port argument on the command line.

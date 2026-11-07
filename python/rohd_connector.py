@@ -1,5 +1,5 @@
 """
-Copyright (C) 2022-2025 Intel Corporation
+Copyright (C) 2022-2026 Intel Corporation
 SPDX-License-Identifier: BSD-3-Clause
 
 rohd_connector.py
@@ -35,6 +35,7 @@ class RohdConnector:
         clk_ratio=1000,
         clk_units="ps",
         dart_connect_timeout=120,
+        dart_message_timeout=None,
     ):
         self.enable_logging = enable_logging
 
@@ -50,6 +51,11 @@ class RohdConnector:
         self.listen_timeout = listen_timeout
         self.tick_timeout = tick_timeout
         self.dart_connect_timeout = dart_connect_timeout
+        self.dart_message_timeout = (
+            dart_connect_timeout
+            if dart_message_timeout is None
+            else dart_message_timeout
+        )
 
         self.clk_units = clk_units
 
@@ -169,10 +175,10 @@ class RohdConnector:
 
             if (
                 self.last_message_received_time is not None
-                and self.dart_connect_timeout is not None
+                and self.dart_message_timeout is not None
                 and (
                     (time.time() - self.last_message_received_time)
-                    > self.dart_connect_timeout
+                    > self.dart_message_timeout
                 )
             ):
                 self._error(

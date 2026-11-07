@@ -1,4 +1,4 @@
-// Copyright (C) 2022-2025 Intel Corporation
+// Copyright (C) 2022-2026 Intel Corporation
 // SPDX-License-Identifier: BSD-3-Clause
 //
 // port_launch.dart
@@ -8,6 +8,7 @@
 // Author: Max Korbel <max.korbel@intel.com>
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
@@ -76,6 +77,9 @@ Future<void> runCosim(int port,
   }
 
   log('Connecting to cosimulation on port $port...');
+  if (Platform.environment.containsKey('DART_DELAY_CONNECT')) {
+    await Future<void>.delayed(const Duration(seconds: 6));
+  }
   await Cosim.connectCosimulation(
       CosimPortConfig(port, enableLogging: enableLogging));
 

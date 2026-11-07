@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2023 Intel Corporation
+# Copyright (C) 2023-2026 Intel Corporation
 # SPDX-License-Identifier: BSD-3-Clause
 #
 # install_dart.sh
@@ -13,19 +13,23 @@ set -euo pipefail
 
 # Add Dart repository key.
 
-declare -r input_pubkey_file='tool/gh_codespaces/pubkeys/dart.pub'
+declare -r dart_pubkey_url='https://dl-ssl.google.com/linux/linux_signing_key.pub'
 declare -r output_pubkey_file='/usr/share/keyrings/dart.gpg'
+declare -r temporary_pubkey_file="$(mktemp)"
+trap 'rm -f -- "${temporary_pubkey_file}"' EXIT
 
-sudo gpg --output ${output_pubkey_file} --dearmor ${input_pubkey_file}
+curl -fsSL "${dart_pubkey_url}" |
+  gpg --batch --yes --output "${temporary_pubkey_file}" --dearmor
+sudo install -m 644 "${temporary_pubkey_file}" "${output_pubkey_file}"
 
 # Add Dart repository.
 
 declare -r dart_repository_url='https://storage.googleapis.com/download.dartlang.org/linux/debian'
 declare -r dart_repository_file='/etc/apt/sources.list.d/dart.list'
 
-echo "deb [signed-by=${output_pubkey_file}] ${dart_repository_url} stable main" | sudo tee ${dart_repository_file}
+echo "deb [signed-by=${output_pubkey_file}] ${dart_repository_url} stable main" | sudo tee "${dart_repository_file}"
 
 # Install Dart.
 
 sudo apt-get update
-sudo apt-get install dart
+sudo apt-get install --yes dart
